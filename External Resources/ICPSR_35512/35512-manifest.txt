@@ -1,0 +1,45 @@
+File Manifest for ICPSR 35512
+
+Golden, Miriam. Electoral Performance and Criminal Status of Candidates
+Contesting the 2004 and 2009 Parliamentary Elections to the Lok Sabha
+(India). ICPSR35512-v1. Ann Arbor, MI: Inter-university Consortium for
+Political and Social Research [distributor], 2015-02-06.
+http://doi.org/10.3886/ICPSR35512.v1
+
+
+Study-level Documentation
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35512-manifest.txt                  -       -         -       2015-10-19  -
+
+
+DS0001 Electoral Performance and Criminal Status of Candidates Contesting
+the 2004 and 2009 Parliamentary Elections to the Lok Sabha (India)
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35512-0001-Codebook.pdf             -       -         -       2015-02-06  26665fabf41210587c2f71a19cfaca81
+
+    35512-0001-Data.dta                 -       13,505    16      2015-02-06  a897a38f62190ca4a4e08bd6454e8576
+
+    35512-0001-Data.rda                 -       13,505    16      2015-02-06  24f56a812ac979096fa5d9519bd80f9a
+
+    35512-0001-Data.sav                 -       13,505    16      2015-02-06  408805118a59e6beaada1ae41ac31ebd
+
+    35512-0001-Data.stc                 -       13,505    16      2015-02-06  458634c4f4be6d53038ba5ab7d25f74a
+
+    35512-0001-Data.tsv                 -       13,505    16      2015-02-06  e54cd752eb98e3eaa8ddbc35e49139a2
+
+    35512-0001-Data.txt                 159     13,505    16      2015-02-06  cc42dc3f1e861c89d4bfaad359589a35
+
+    35512-0001-Setup.dct                -       -         -       2015-02-06  6669bfe3c5de8739f2d04832d3824803
+
+    35512-0001-Setup.do                 -       -         -       2015-02-06  2eb590d36ea7b1532238f45f2041c320
+
+    35512-0001-Setup.sas                -       -         -       2015-02-06  db10a4230445779387d36d748094fec7
+
+    35512-0001-Setup.sps                -       -         -       2015-02-06  fc741b67759791030f1b99da3e1f59bf
+
