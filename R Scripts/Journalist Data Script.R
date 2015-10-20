@@ -8,3 +8,4 @@ dat <- read.dta13('1. Journalist Data/Input Data/journalist_data_nopii.dta')
 
 ## Lauren is adding code too!
 
+## Lauren line 11
