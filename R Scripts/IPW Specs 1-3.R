@@ -14,12 +14,12 @@ print(ATE.IPW1)
 reg1a <- lm(voteshare_spec1_2014 ~ treatany, data=dat1, weights = wgt_treatany)
 summary(reg1a)
 
-library(lfe)
 dat1$lit_pc <- 100 - dat1$illit_pc
-reg1b <- felm(voteshare_spec1_2014 ~ treatany + G(lit_pc) + G(rural_pc) + G(scst_pc), dat1, weights=dat1$wgt_treatany)
+reg1b <- lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + as.factor(illit_pc) + as.factor(rural_pc) + as.factor(scst_pc), dat1, weights=wgt_treatany)
 summary(reg1b)
+print(coefficients(reg1b)[2])
 
-# FE - Spec 1
+# FE - Spec 1 
 #library(lfe)
 #FE1 <- felm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 | (illit_pc + scst_pc + rural_pc), data=dat1)
 #summary(FE1)
@@ -34,6 +34,9 @@ summary(IPW2)
 ATE.IPW2 <- coefficients(IPW2)[2]
 print(ATE.IPW2)
 
+reg2a <- lm(voteshare_spec2_2014 ~ treatany, data=dat2, weights = wgt_treatany)
+summary(reg2a)
+
 # Load dataset
 dat3 <- as.data.frame(read.csv("/Users/zeno/Dropbox/Green and Vasudevan (2015) Data (1)/4. Analysis/Matlab Data/voteshare3.csv"))
 names(dat3)
@@ -44,3 +47,5 @@ summary(IPW3)
 ATE.IPW3 <- coefficients(IPW3)[2]
 print(ATE.IPW3)
 
+reg3a <- lm(voteshare_spec3_2014 ~ treatany, data=dat3, weights = wgt_treatany)
+summary(reg3a)
