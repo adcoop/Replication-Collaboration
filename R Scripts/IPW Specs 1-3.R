@@ -44,19 +44,3 @@ summary(IPW3)
 ATE.IPW3 <- coefficients(IPW3)[2]
 print(ATE.IPW3)
 
-library(lfe)
-felm(turnoutrate_2014 ~ treatany + turnoutrate_2009 + G(dat$x2) + G(dat$x3))
-
-
-
-
-
-library(readstata13)
-turnout09 <- as.data.frame(read.dta13("/Users/zeno/Dropbox/Green and Vasudevan (2015) Data (1)/4. Analysis/Stata Data/turnout_data.dta"))
-
-
-table(AC$)
-table(AC$num_eligible)
-
-Experimental.Assignment <- xtabs(~treated + AidSpend, data = ForeignAid)
-print(xtab)

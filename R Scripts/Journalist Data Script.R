@@ -8,7 +8,12 @@ dat <- read.dta13('1. Journalist Data/Input Data/journalist_data_nopii.dta')
 
 ## Lauren is adding code too!
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+# IN Alicia's clone
+
+>>>>>>> origin/master
 
 =======
 <<<<<<< HEAD
