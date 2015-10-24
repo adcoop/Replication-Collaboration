@@ -1,3 +1,4 @@
+rm(list=ls())
 library(foreign)
 dat1 <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
 N<- 628
@@ -21,6 +22,8 @@ for (i in 1:N){
 num_terms <- sum(dep_matrix)
 
 # IPW - Spec 1 (Table 6 Col 1)
+IPW1 = (lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009, data=dat1, weights=wgt_treatany))
+summary(IPW1)
 w <- sqrt(dat1$wgt_treatany)
 X.IPW1 <- cbind(w, dat1$treatany*w, dat1$voteshare_spec1_2009*w)
 Y.IPW1 <- dat1$voteshare_spec1_2014*w
@@ -29,7 +32,7 @@ IPW1.resid <- Y.IPW1 - X.IPW1%*%IPW1.beta_hat
 IPW1.vhat.notrobust <- (1/(N-ncol(X.IPW1)))*as.numeric((t(IPW1.resid) %*% IPW1.resid))*solve(t(X.IPW1)%*%X.IPW1)
 sqrt(diag(IPW1.vhat.notrobust))
 IPW1.omega_hat <- dep_matrix*(IPW1.resid %*% t(IPW1.resid))
-IPW1.vhat <- solve(t(X.IPW1)%*%X.IPW1) %*% (t(X.IPW1) %*% UW1.omega_hat %*% X.IPW1) %*% solve(t(X.IPW1)%*%X.IPW1) 
+IPW1.vhat <- solve(t(X.IPW1)%*%X.IPW1) %*% (t(X.IPW1) %*% IPW1.omega_hat %*% X.IPW1) %*% solve(t(X.IPW1)%*%X.IPW1) 
 IPW1.sd_hat <- sqrt(diag(IPW1.vhat))
 IPW1.sd_hat
 IPW1.p = 1 - pnorm(abs(IPW1.beta_hat[2]/IPW1.sd_hat[2]))
