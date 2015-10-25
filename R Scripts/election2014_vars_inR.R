@@ -71,15 +71,27 @@ save(merge, file="~/Desktop/Replication Collaboration Clone/R Scripts/election20
 
 # votebuyer_specs.do -------------------------------------------------------
 
-# the journalist.data.nopii is the uncleaned results from the journalists - so keeps original parties
-# The file cleans it and gets rid of original parties.
-# *Standardizing party/alliance names
-# foreach var of varlist spend_1-win_3 party_? actual_cand_party? {
-#   replace `var' = "NDA" if inlist(`var',"BJP","SHS","TDP","SWP","RPI(A)","LJP","RSP","AD")
-# replace `var' = "UPA" if inlist(`var',"INC","NCP","RJD","RLD","JMM")
-# }
-# Exports three different votebuying specifications by standardized party/alliance names
-# Matches up parties with actual voteshare from PC.results
+# the journalist.data.nopii is the uncleaned results from the journalists
+# code to create journalist.data.nopii.clean
+journalist <- left_join(journalist.data.nopii, PC.results, by=c("state_name", "pc_name"))
+PC.sample <- AC.expt.sample[,c("state_name", "pc_name", "ac_num")]
+PC.sample <- PC.sample %>% group_by(state_name, pc_name) %>% mutate(n = dense_rank(ac_num))
+PC.sample <- subset(PC.sample,n==1)
+PC.sample <- PC.sample[,c("state_name", "pc_name")]
+PC.sample$in_sample <- 1
+journalist <- left_join(journalist,PC.sample, by=c("state_name", "pc_name"))
+journalist <- left_join(journalist,ECI.sched.clean, by=c("state_name", "pc_name"))
+journalist$win_2[journalist$win_1==journalist$win_2] <- ""
+journalist$resp_secret[journalist$secret_1==""] <- 0
+journalist$resp_secret[journalist$secret_1!=""] <- 1
+# journalist here is the same as journalist.data.nopii.clean
+
+# To export the votebuyers.spec1, etc.
+journalist.sample <- subset(journalist, in_sample==1)
+journalist.sample <- subset(journalist.sample, resp_secret==1)
+journalist.sample <- journalist.sample %>% group_by(state_name, pc_num) %>% mutate(num_resp = n())
+table(journalist.sample$state_name, journalist.sample$pc_num)
+
 
 # voteshare_data.do -------------------------------------------------------
 elec2014 <- results.10states2014.clean
