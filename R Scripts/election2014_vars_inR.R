@@ -13,6 +13,7 @@ journalist.data.nopii <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replic
 
 # Read Electoral Data
 results.10states2014.clean <- read_dta("~/Dropbox/Green and Vasudevan (2015) replication/2. Electoral Data/results_10states2014_clean.dta")
+results.10states2009.clean <- read_dta("~/Dropbox/Green and Vasudevan (2015) replication/2. Electoral Data/results_10states2009_clean.dta")
 ECI.sched.clean <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/2. Electoral Data/ECI_sched_clean.dta")
 PC.results <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/2. Electoral Data/PC_results.dta")
 
@@ -81,15 +82,103 @@ save(merge, file="~/Desktop/Replication Collaboration Clone/R Scripts/election20
 # Matches up parties with actual voteshare from PC.results
 
 # voteshare_data.do -------------------------------------------------------
+elec2014 <- results.10states2014.clean
+elec2014 <- subset(elec2014, ac_num>0)
+elec2014 <- left_join(elec2014,ECI.sched.clean, by=c("state_name", "pc_num") )
+# *Standardizing party/alliance names
+elec2014$party_name <- elec2014$cand_party
+elec2014$party_name[elec2014$party_name %in% c("BJP","TDP","SHS","SWP","RPI(A)","RSP","LJP","AD")] <- "NDA"
+elec2014$party_name[elec2014$party_name %in% c("INC","NCP","RJD","RLD","JMM")] <- "UPA"
+#View(elec2014[,c("party_name", "cand_party")])
+# *Merging in vote-buyer specifications
+votebuyers.spec1$votebuyer_1 <- 1
+votebuyers.spec2$votebuyer_2 <- 1
+votebuyers.spec3$votebuyer_3 <- 1
+elec2014$poll_date <- as.character(elec2014$poll_date)
+votebuyers.spec2$poll_date <- as.character(votebuyers.spec2$poll_date)
+elec2014 <- left_join(elec2014,votebuyers.spec1,by=c("state_name", "pc_num", "party_name"))
+elec2014$poll_date <- elec2014$poll_date.x
+elec2014 <- left_join(elec2014,votebuyers.spec2,by=c("state_name", "poll_date", "party_name"))
+elec2014 <- left_join(elec2014,votebuyers.spec3,by=c("state_name", "party_name"))
+# *Number of vote-buying parties and vote-buyer vote-shares
+votebuyer1 <- subset(elec2014, votebuyer_1==1)
+votebuyer1 <- votebuyer1 %>% group_by(state_name, ac_num) %>% mutate(votes = sum(cand_votes))
+votebuyer1 <- votebuyer1 %>% group_by(state_name, ac_num) %>% mutate(num_spec1_2014 = sum(votebuyer_1))
+votebuyer1$voteshare_spec1_2014 <- 100*votebuyer1$votes/votebuyer1$total_ac_votes
+votebuyer1 <- votebuyer1 %>% group_by(state_name, ac_num) %>% mutate(n = dense_rank(cand_votes))
+View(votebuyer1[,c("state_name", "ac_num", "votes", "cand_votes", "n")])
+votebuyer1 <- subset(votebuyer1, n==1)
+votebuyer1 <- votebuyer1[,c("state_name", "pc_name", "pc_num", "ac_name", "ac_num", "voteshare_spec1_2014", "num_spec1_2014")]
+votebuyer2 <- subset(elec2014, votebuyer_2==1)
+votebuyer2 <- votebuyer2 %>% group_by(state_name, ac_num) %>% mutate(votes = sum(cand_votes))
+votebuyer2 <- votebuyer2 %>% group_by(state_name, ac_num) %>% mutate(num_spec2_2014 = sum(votebuyer_2))
+# This is different from their code. From stata: "bys state_name ac_num: egen num_spec2_2014 = count(votebuyer_1)"
+# Doesn't make sense to count up the number of votebuyer_1 per ac_num -- instead, want to know the number of parties in each ac_num identified via spec2
+# If stata includes NA in the count, then their code works.
+View(votebuyer2[,c("state_name", "ac_num", "votes", "cand_votes","votebuyer_1", "votebuyer_2", "party_name")])
+votebuyer2$voteshare_spec2_2014 <- 100*votebuyer2$votes/votebuyer2$total_ac_votes
+votebuyer2 <- votebuyer2 %>% group_by(state_name, ac_num) %>% mutate(n = dense_rank(cand_votes))
+View(votebuyer2[,c("state_name", "ac_num", "votes", "cand_votes", "n", "voteshare_spec2_2014", "num_spec2_2014")])
+votebuyer2 <- subset(votebuyer2, n==1)
+votebuyer2 <- votebuyer2[,c("state_name", "pc_name", "pc_num", "ac_name", "ac_num", "voteshare_spec2_2014", "num_spec2_2014")]
+votebuyer3 <- subset(elec2014, votebuyer_3==1)
+votebuyer3 <- votebuyer3 %>% group_by(state_name, ac_num) %>% mutate(votes = sum(cand_votes))
+votebuyer3 <- votebuyer3 %>% group_by(state_name, ac_num) %>% mutate(num_spec3_2014 = sum(votebuyer_3))
+# This is different from their code. From stata: "bys state_name ac_num: egen num_spec3_2014 = count(votebuyer_1)"
+# Doesn't make sense to sum up the number of votebuyer_1 per ac_num -- instead, want to know the number of parties in each ac_num identified via spec3
+# If stata includes NA in the count, then their code works.
+votebuyer3$voteshare_spec3_2014 <- 100*votebuyer3$votes/votebuyer3$total_ac_votes
+votebuyer3 <- votebuyer3 %>% group_by(state_name, ac_num) %>% mutate(n = dense_rank(cand_votes))
+View(votebuyer3[,c("state_name", "ac_num", "votes", "cand_votes", "n", "voteshare_spec3_2014", "num_spec3_2014")])
+votebuyer3 <- subset(votebuyer3, n==1)
+votebuyer3 <- votebuyer3[,c("state_name", "pc_name", "pc_num", "ac_name", "ac_num", "voteshare_spec3_2014", "num_spec3_2014")]
+data2014 <- inner_join(votebuyer1,votebuyer2,by=c("state_name", "ac_num"))
+data2014 <- inner_join(data2014,votebuyer3,by=c("state_name", "ac_num"))
 
-# Most of the merging in stata to combine journalist specifications with vote share from 2009 and 2014.
-# Matched on journalist reports by state_name pc_num party_name
-# Assume same parties are buying votes in 2009 and 2014, same party/alliance in 2009 and 2014 (is this true?)
-# Small parties lumped into alliances
-# rename  cand_party party_name
-# replace party_name = "NDA" if inlist(party_name,"BJP","TDP","SHS","SWP","RPI(A)","RSP","LJP","AD")
-# replace party_name = "UPA" if inlist(party_name,"INC","NCP","RJD","RLD","JMM") 
+###### same for 2009
+elec2009 <- results.10states2009.clean
+elec2009 <- subset(elec2009, ac_num>0)
+elec2009 <- left_join(elec2009,ECI.sched.clean, by=c("state_name", "pc_num") )
+# *Standardizing party/alliance names
+elec2009$party_name <- elec2009$cand_party
+elec2009$party_name[elec2009$party_name %in% c("BJP","TDP","SHS","SWP","RPI(A)","RSP","LJP","AD")] <- "NDA"
+elec2009$party_name[elec2009$party_name %in% c("INC","NCP","RJD","RLD","JMM")] <- "UPA"
+#View(elec2009[,c("party_name", "cand_party")])
+# *Merging in vote-buyer specifications
+elec2009$poll_date <- as.character(elec2009$poll_date)
+elec2009 <- left_join(elec2009,votebuyers.spec1,by=c("state_name", "pc_num", "party_name"))
+elec2009$poll_date <- elec2009$poll_date.x
+elec2009 <- left_join(elec2009,votebuyers.spec2,by=c("state_name", "poll_date", "party_name"))
+elec2009 <- left_join(elec2009,votebuyers.spec3,by=c("state_name", "party_name"))
+# *Number of vote-buying parties and vote-buyer vote-shares
+votebuyer1 <- subset(elec2009, votebuyer_1==1)
+votebuyer1 <- votebuyer1 %>% group_by(state_name, ac_num) %>% mutate(votes = sum(cand_votes))
+votebuyer1 <- votebuyer1 %>% group_by(state_name, ac_num) %>% mutate(num_spec1_2009 = sum(votebuyer_1))
+votebuyer1$voteshare_spec1_2009 <- 100*votebuyer1$votes/votebuyer1$total_ac_votes
+votebuyer1 <- votebuyer1 %>% group_by(state_name, ac_num) %>% mutate(n = dense_rank(cand_votes))
+votebuyer1 <- subset(votebuyer1, n==1)
+votebuyer1 <- votebuyer1[,c("state_name", "pc_name", "pc_num", "ac_name", "ac_num", "voteshare_spec1_2009", "num_spec1_2009")]
+votebuyer2 <- subset(elec2009, votebuyer_2==1)
+votebuyer2 <- votebuyer2 %>% group_by(state_name, ac_num) %>% mutate(votes = sum(cand_votes))
+votebuyer2 <- votebuyer2 %>% group_by(state_name, ac_num) %>% mutate(num_spec2_2009 = sum(votebuyer_2))
+votebuyer2$voteshare_spec2_2009 <- 100*votebuyer2$votes/votebuyer2$total_ac_votes
+votebuyer2 <- votebuyer2 %>% group_by(state_name, ac_num) %>% mutate(n = dense_rank(cand_votes))
+votebuyer2 <- subset(votebuyer2, n==1)
+votebuyer2 <- votebuyer2[,c("state_name", "pc_name", "pc_num", "ac_name", "ac_num", "voteshare_spec2_2009", "num_spec2_2009")]
+votebuyer3 <- subset(elec2009, votebuyer_3==1)
+votebuyer3 <- votebuyer3 %>% group_by(state_name, ac_num) %>% mutate(votes = sum(cand_votes))
+votebuyer3 <- votebuyer3 %>% group_by(state_name, ac_num) %>% mutate(num_spec3_2009 = sum(votebuyer_3))
+votebuyer3$voteshare_spec3_2009 <- 100*votebuyer3$votes/votebuyer3$total_ac_votes
+votebuyer3 <- votebuyer3 %>% group_by(state_name, ac_num) %>% mutate(n = dense_rank(cand_votes))
+votebuyer3 <- subset(votebuyer3, n==1)
+votebuyer3 <- votebuyer3[,c("state_name", "pc_name", "pc_num", "ac_name", "ac_num", "voteshare_spec3_2009", "num_spec3_2009")]
+data2009 <- inner_join(votebuyer1,votebuyer2,by=c("state_name", "ac_num"))
+data2009 <- inner_join(data2009,votebuyer3,by=c("state_name", "ac_num"))
 
-# To create csvs for analysis, the file merges voteshare_data.dta with AC_expt_sample
-
+voteshare_data <- left_join(data2014, data2009, by=c("state_name", "ac_num"))
+voteshare_data$num_spec1_2009[is.na(voteshare_data$num_spec1_2009)] <- 0
+voteshare_data$num_spec2_2009[is.na(voteshare_data$num_spec2_2009)] <- 0
+voteshare_data$num_spec3_2009[is.na(voteshare_data$num_spec3_2009)] <- 0
+# Reproduction of their voteshare_data.dta. 
+# Does not include parties, etc. Just sum of voteshare for each votebuying party for each AC.
 
