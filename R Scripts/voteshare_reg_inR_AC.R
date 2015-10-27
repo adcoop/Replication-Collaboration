@@ -13,68 +13,34 @@ library(dplyr)
 
 ## set to your local clone
 setwd('~/Desktop/Replication Collaboration Clone')
-
+dat2o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare2.csv")
+dat3o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare3.csv")
 dat1 <- read.csv("Data/voteshare1.csv")
-dat1o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
+dat2 <- read.csv("Data/voteshare2.csv")
+dat3 <- read.csv("Data/voteshare3.csv")
 
-names(dat1)
+summary(dat2$voteshare_spec2_2014)
+summary(dat2o$voteshare_spec2_2014)
+plot(dat2$voteshare_spec2_2014, dat2o$voteshare_spec2_2014)
 
-## set up omega matrix
-N <- dim(dat1)[1]
-station1 <- dat1[,'station_id1']
-station2 <- dat1[,'station_id2']
-station3 <- dat1[,'station_id3']
-dep_matrix <- matrix(0,N,N) 
-for (i in 1:N){
-  for (j in 1:N){
-    dep_matrix[i,j] <- ifelse(station1[i] == station1[j],1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station1[i] == station2[j],1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station1[i] == station3[j],1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station2[i] == station1[j] & station2[i] != -9,1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station2[i] == station2[j] & station2[i] != -9,1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station2[i] == station3[j] & station2[i] != -9,1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station3[i] == station1[j] & station3[i] != -9,1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station3[i] == station2[j] & station3[i] != -9,1,dep_matrix[i,j])
-    dep_matrix[i,j] <- ifelse(station3[i] == station3[j] & station3[i] != -9,1,dep_matrix[i,j])
-  }
-}
-num_terms <- sum(dep_matrix)
+source("R Scripts/Functions/omegamatrix.R")
+source("R Scripts/Functions/IPW and FE function.R")
+dep_matrix1 <- omegamatrix(dat1)
+dep_matrix2 <- omegamatrix(dat2)
+dep_matrix2o <- omegamatrix(dat2o)
+dep_matrix3 <- omegamatrix(dat3)
+dep_matrix3o <- omegamatrix(dat3o)
 
-# IPW - Spec 1 (Table 6 Col 1)
-IPW1 = (lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009, data=dat1, weights=wgt_treatany))
-summary(IPW1)
-w <- sqrt(dat1$wgt_treatany)
-X.IPW1 <- cbind(w, dat1$treatany*w, dat1$voteshare_spec1_2009*w)
-Y.IPW1 <- dat1$voteshare_spec1_2014*w
-IPW1.beta_hat <- solve(t(X.IPW1)%*%X.IPW1)%*%(t(X.IPW1)%*%Y.IPW1)
-IPW1.resid <- Y.IPW1 - X.IPW1%*%IPW1.beta_hat
-IPW1.vhat.notrobust <- (1/(N-ncol(X.IPW1)))*as.numeric((t(IPW1.resid) %*% IPW1.resid))*solve(t(X.IPW1)%*%X.IPW1)
-sqrt(diag(IPW1.vhat.notrobust))
-IPW1.omega_hat <- dep_matrix*(IPW1.resid %*% t(IPW1.resid))
-IPW1.vhat <- solve(t(X.IPW1)%*%X.IPW1) %*% (t(X.IPW1) %*% IPW1.omega_hat %*% X.IPW1) %*% solve(t(X.IPW1)%*%X.IPW1) 
-IPW1.sd_hat <- sqrt(diag(IPW1.vhat))
-IPW1.sd_hat
-IPW1.p <- 1 - pnorm(abs(IPW1.beta_hat[2]/IPW1.sd_hat[2]))
-IPW1.p
+Spec1 <- IPW.FE.fxn(dat1, "voteshare_spec1_2009", "voteshare_spec1_2014", dep_matrix1)
+Spec2 <- IPW.FE.fxn(dat2, "voteshare_spec2_2009", "voteshare_spec2_2014", dep_matrix2)
+Spec3 <- IPW.FE.fxn(dat3, "voteshare_spec3_2009", "voteshare_spec3_2014", dep_matrix3)
 
-# FE - Spec 1 (Table 6 Column 2)
-FE1 = (lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1o))
-summary(FE1)
-ATE.FE1 <- coefficients(FE1)[2]
-print(ATE.FE1)
-X.FE1 <- cbind(1,dat1$treatany, dat1$voteshare_spec1_2009,dat1$num_eligible1,dat1$num_eligible2)
-Y.FE1 <- dat1$voteshare_spec1_2014
-FE1.beta_hat <- solve(t(X.FE1)%*%X.FE1)%*%(t(X.FE1)%*%Y.FE1)
-FE1.resid <- Y.FE1 - X.FE1%*%FE1.beta_hat
-FE1.vhat.notrobust <- (1/(N-ncol(X.FE1)))*as.numeric((t(FE1.resid) %*% FE1.resid))*solve(t(X.FE1)%*%X.FE1)
-sqrt(diag(FE1.vhat.notrobust))
-FE1.omega_hat <- dep_matrix*(FE1.resid %*% t(FE1.resid))
-FE1.vhat <- solve(t(X.FE1)%*%X.FE1) %*% (t(X.FE1) %*% FE1.omega_hat %*% X.FE1) %*% solve(t(X.FE1)%*%X.FE1) 
-FE1.sd_hat <- sqrt(diag(FE1.vhat))
-FE1.sd_hat
-FE1.p = 1 - pnorm(abs(FE1.beta_hat[2]/FE1.sd_hat[2]))
+Spectable <- cbind(Spec1, Spec2, Spec3)
 
-# Heterogeneous treatment effects by rural (they drop the state names in the Stata - need to use a new version to get back)
+
+
+# Heterogeneous Effects ---------------------------------------------------
+# Heterogeneous treatment effects by rural
 dat1$rur90.dum[dat1$rural_pc>90] <- 1
 dat1$rur90.dum[dat1$rural_pc<=90] <- 0
 dat1$rur80.dum[dat1$rural_pc>80] <- 1
