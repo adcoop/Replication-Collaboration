@@ -1,10 +1,27 @@
+
+##########
+##########
+## Voteshare Regressions
+##########
+##########
+
+
 rm(list=ls())
+
 library(foreign)
-dat1 <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
-N<- 628
-station1 <- dat1[,11]
-station2 <- dat1[,12]
-station3 <- dat1[,13]
+library(dplyr)
+
+## set to your local clone
+setwd('~/Desktop/Replication Collaboration Clone')
+
+dat1 <- read.csv("Data/voteshare1.csv")
+# dat1o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
+
+## set up omega matrix
+N <- dim(dat1)[1]
+station1 <- dat1[,'station_id1']
+station2 <- dat1[,'station_id2']
+station3 <- dat1[,'station_id3']
 dep_matrix <- matrix(0,N,N) 
 for (i in 1:N){
   for (j in 1:N){

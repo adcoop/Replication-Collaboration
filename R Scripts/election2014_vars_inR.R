@@ -175,7 +175,7 @@ votebuyers.spec3 <- read.csv('Data/votebuyers_spec3.csv')
 ## prep election results
 elec2014 <- results.10states2014.clean
 elec2014 <- subset(elec2014, ac_num>0)
-elec2014 <- left_join(elec2014,ECI.sched.clean, by=c("state_name", "pc_num") )
+elec2014 <- left_join(elec2014,ECI.sched.clean, by=c("state_name", 'pc_name', "pc_num") )
 
 ## Standardizing party/alliance names
 elec2014$party_name <- elec2014$cand_party
@@ -210,12 +210,10 @@ votebuyers.spec3 <- select(votebuyers.spec3, state_name, party_name:votebuyer_3_
 elec2014 <- left_join(elec2014, votebuyers.spec1, by=c("state_name", "pc_num", "party_name"))
 elec2014 <- left_join(elec2014, votebuyers.spec2, by=c("state_name", "poll_date", "party_name"))
 elec2014 <- left_join(elec2014, votebuyers.spec3, by=c("state_name", "party_name"))
-setnames(elec2014, 'pc_name.x', 'pc_name')
-elec2014$pc_name.y=NULL
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 1
 votebuyer1 <- elec2014 %>% 
-  group_by(state_name, pc_name, ac_name) %>%
+  group_by(state_name, pc_name, ac_name, ac_num) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_1_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_1_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_1_0.2==1], na.rm=T),
@@ -241,7 +239,7 @@ votebuyer1$voteshare_spec1_2014_0.9 <- 100*votebuyer1$votes_0.9/votebuyer1$total
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 2
 votebuyer2 <- elec2014 %>% 
-  group_by(state_name, pc_name, ac_name) %>%
+  group_by(state_name, pc_name, ac_name, ac_num) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_2_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_2_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_2_0.2==1], na.rm=T),
@@ -267,7 +265,7 @@ votebuyer2$voteshare_spec2_2014_0.9 <- 100*votebuyer2$votes_0.9/votebuyer2$total
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 3
 votebuyer3 <- elec2014 %>% 
-  group_by(state_name, pc_name, ac_name) %>%
+  group_by(state_name, pc_name, ac_name, ac_num) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_3_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_3_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_3_0.2==1], na.rm=T),
@@ -292,18 +290,18 @@ votebuyer3$voteshare_spec3_2014_0.8 <- 100*votebuyer3$votes_0.8/votebuyer3$total
 votebuyer3$voteshare_spec3_2014_0.9 <- 100*votebuyer3$votes_0.9/votebuyer3$total_ac_votes
 
 ## merge 2014 data together
-votebuyer1 <- select(votebuyer1, state_name:ac_name, num_spec1_2014:voteshare_spec1_2014_0.9)
-votebuyer2 <- select(votebuyer2, state_name:ac_name, num_spec2_2014:voteshare_spec2_2014_0.9)
-votebuyer3 <- select(votebuyer3, state_name:ac_name, num_spec3_2014:voteshare_spec3_2014_0.9)
+votebuyer1 <- select(votebuyer1, state_name:ac_num, num_spec1_2014:voteshare_spec1_2014_0.9)
+votebuyer2 <- select(votebuyer2, state_name:ac_num, num_spec2_2014:voteshare_spec2_2014_0.9, -total_ac_votes)
+votebuyer3 <- select(votebuyer3, state_name:ac_num, num_spec3_2014:voteshare_spec3_2014_0.9, -total_ac_votes)
 
-voteshare_data <- left_join(votebuyer1, votebuyer2, by = c('state_name', 'pc_name', 'ac_name'))
-voteshare_data <- left_join(voteshare_data, votebuyer3, by = c('state_name', 'pc_name', 'ac_name'))
+voteshare_data <- left_join(votebuyer1, votebuyer2, by = c('state_name', 'pc_name', 'ac_name', 'ac_num'))
+voteshare_data <- left_join(voteshare_data, votebuyer3, by = c('state_name', 'pc_name', 'ac_name', 'ac_num'))
 
 
 ## prep election results - 2009
 elec2009 <- results.10states2009.clean
 elec2009 <- subset(elec2009, ac_num>0)
-elec2009 <- left_join(elec2009,ECI.sched.clean, by=c("state_name", "pc_num") )
+elec2009 <- left_join(elec2009,ECI.sched.clean, by=c("state_name", "pc_num", 'pc_name') )
 
 ## Standardizing party/alliance names
 elec2009$party_name <- elec2009$cand_party
@@ -315,12 +313,10 @@ elec2009$poll_date <- as.character(elec2009$poll_date)
 elec2009 <- left_join(elec2009, votebuyers.spec1, by=c("state_name", "pc_num", "party_name"))
 elec2009 <- left_join(elec2009, votebuyers.spec2, by=c("state_name", "poll_date", "party_name"))
 elec2009 <- left_join(elec2009, votebuyers.spec3, by=c("state_name", "party_name"))
-setnames(elec2009, 'pc_name.x', 'pc_name')
-elec2009$pc_name.y=NULL
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 1
 votebuyer1 <- elec2009 %>% 
-  group_by(state_name, pc_name, ac_name) %>%
+  group_by(state_name, pc_name, ac_name, ac_num) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_1_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_1_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_1_0.2==1], na.rm=T),
@@ -346,7 +342,7 @@ votebuyer1$voteshare_spec1_2009_0.9 <- 100*votebuyer1$votes_0.9/votebuyer1$total
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 2
 votebuyer2 <- elec2009 %>% 
-  group_by(state_name, pc_name, ac_name) %>%
+  group_by(state_name, pc_name, ac_name, ac_num) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_2_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_2_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_2_0.2==1], na.rm=T),
@@ -372,7 +368,7 @@ votebuyer2$voteshare_spec2_2009_0.9 <- 100*votebuyer2$votes_0.9/votebuyer2$total
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 3
 votebuyer3 <- elec2009 %>% 
-  group_by(state_name, pc_name, ac_name) %>%
+  group_by(state_name, pc_name, ac_name, ac_num) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_3_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_3_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_3_0.2==1], na.rm=T),
@@ -397,16 +393,40 @@ votebuyer3$voteshare_spec3_2009_0.8 <- 100*votebuyer3$votes_0.8/votebuyer3$total
 votebuyer3$voteshare_spec3_2009_0.9 <- 100*votebuyer3$votes_0.9/votebuyer3$total_ac_votes
 
 ## merge everything together
-votebuyer1 <- select(votebuyer1, state_name:ac_name, voteshare_spec1_2009:voteshare_spec1_2009_0.9)
-votebuyer2 <- select(votebuyer2, state_name:ac_name, voteshare_spec2_2009:voteshare_spec2_2009_0.9)
-votebuyer3 <- select(votebuyer3, state_name:ac_name, voteshare_spec3_2009:voteshare_spec3_2009_0.9)
+votebuyer1 <- select(votebuyer1, state_name, ac_num, voteshare_spec1_2009:voteshare_spec1_2009_0.9)
+votebuyer1$pc_name=NULL; votebuyer1$ac_name=NULL
+votebuyer2 <- select(votebuyer2, state_name, ac_num, voteshare_spec2_2009:voteshare_spec2_2009_0.9)
+votebuyer2$pc_name=NULL; votebuyer2$ac_name=NULL
+votebuyer3 <- select(votebuyer3, state_name, ac_num, voteshare_spec3_2009:voteshare_spec3_2009_0.9)
+votebuyer3$pc_name=NULL; votebuyer3$ac_name=NULL
 
-voteshare_data <- left_join(voteshare_data, votebuyer1, by = c('state_name', 'pc_name', 'ac_name'))
-voteshare_data <- left_join(voteshare_data, votebuyer2, by = c('state_name', 'pc_name', 'ac_name'))
-voteshare_data <- left_join(voteshare_data, votebuyer3, by = c('state_name', 'pc_name', 'ac_name'))
+voteshare_data <- left_join(voteshare_data, votebuyer1, by = c('state_name', 'ac_num'))
+voteshare_data <- left_join(voteshare_data, votebuyer2, by = c('state_name', 'ac_num'))
+voteshare_data <- left_join(voteshare_data, votebuyer3, by = c('state_name', 'ac_num'))
 
 write.csv(voteshare_data, "Data/voteshare_data.csv")
 
+## merge in experimental sample
+AC.expt.sample <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/3. Sample Data/AC_expt_sample.dta")
+voteshare_data <- inner_join(voteshare_data, 
+                             select(AC.expt.sample, -pc_name, -ac_name),
+                            by = c('state_name', 'ac_num'))
+
+## write to csv for each specification
+voteshare_data1 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
+                          grep("_spec1_", colnames(voteshare_data)),
+                          station_name1:wgt_treatany)
+  ## subset to only ACs where we have voting data 
+voteshare_data1 <- filter(voteshare_data1, num_spec1_2014>0)
+write.csv(voteshare_data1, 'Data/voteshare1.csv')
+voteshare_data2 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
+                          grep("_spec2_", colnames(voteshare_data)),
+                          station_name2:wgt_treatany)
+write.csv(voteshare_data2, 'Data/voteshare2.csv')
+voteshare_data3 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
+                          grep("_spec3_", colnames(voteshare_data)),
+                          station_name2:wgt_treatany)
+write.csv(voteshare_data3, 'Data/voteshare3.csv')
 
 
 ##########
@@ -492,8 +512,8 @@ elec <- filter(elec, cand_num < 2)
 merge <- inner_join(elec, select(AC.expt.sample, -state_code), by=c("state_name", "pc_num",
                                                'pc_name', "ac_num", "ac_name")) 
 merge <- inner_join(merge, 
-                    select(voteshare.data, -total_ac_votes.x, -total_ac_votes.y, -total_ac_votes, -X),
-                    by=c("state_name", "pc_name", "ac_name"))
+                    select(voteshare.data, -total_ac_votes, -X),
+                    by=c("state_name", "pc_name", "ac_name", "ac_num"))
 merge <- left_join(merge, 
                    select(turnout.data, state_name:turnoutrate_2009, state_election),
                    by=c("state_name", "ac_num", 'ac_name'))
