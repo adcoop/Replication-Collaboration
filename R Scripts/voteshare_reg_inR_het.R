@@ -84,5 +84,5 @@ FE.state <- lm(voteshare_spec1_2014 ~ treatany*state_name + voteshare_spec1_2009
 
 covlabels <- c("Treat", "State Bihar", "State Chattisgarh", "State Jharkhand", "State Karnataka", "State Madhya Pradesh", "State Maharashtra", "State Orissa", "State Rajasthan", "State Uttar Pradesh", "Vote Share of Vote Buying Parties 2009", "Num Radio 1", "Num Radio 2", "Treat:Bihar", "Treat:Chattisgarh", "Treat:Jharkhand", "Treat:Karnataka", "Treat:Madhya Pradesh", "Treat:Maharashtra", "Treat:Orissa", "Treat:Rajasthan", "Treat:Uttar Pradesh", "Constant")
 
-cat(stargazer(FE.state, covariate.labels = covlabels, dep.var.labels = "Vote Share of Vote Buying Parties 2014"), file="Figures/statehet.tex", sep="\n")
+cat(stargazer(FE.state, single.row = T, covariate.labels = covlabels, dep.var.labels = "Vote Share of Vote Buying Parties 2014"), file="Figures/statehet.tex", sep="\n")
 

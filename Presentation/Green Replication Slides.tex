@@ -280,15 +280,50 @@ calc het effects by state and then do projections of which party would have won 
 
 \begin{frame}
 \frametitle{Heterogeneous effects: Urban}
-
-
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\scalebox{.9}{
+\vbox{%
+\vspace{-10pt}
+\begin{table}
+Dummy: More than 90\% Rural\\
+\input{../Figures/hetrur90.tex} 
+\bigskip
+Continuous Rural\\
+\input{../Figures/hetrurpc.tex}
+\end{table}}}
+\end{column}%
+\hfill%
+\begin{column}{.48\textwidth}
+\vspace{-10pt}
+\includegraphics[scale=.45]{../Figures/histrurpc.pdf}
+\end{column}%
+\end{columns}
 \end{frame}
 
 \begin{frame}
 \frametitle{Heterogeneous effects: Minority voters}
-
-
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\scalebox{.9}{
+\vbox{%
+\vspace{-10pt}
+\begin{table}
+Dummy: More than 50\% SC/ST \\
+\input{../Figures/hetsc50.tex} 
+\bigskip
+Continuous SC/ST\\
+\input{../Figures/hetscstpc.tex}
+\end{table}}}
+\end{column}%
+\hfill%
+\begin{column}{.48\textwidth}
+\vspace{-10pt}
+\includegraphics[scale=.45]{../Figures/histscstpc.pdf}
+\end{column}%
+\end{columns}
 \end{frame}
+
 
 
 \begin{frame}
@@ -300,12 +335,44 @@ calc het effects by state and then do projections of which party would have won 
 
 \begin{frame}
 \frametitle{Heterogeneous effects: State}
+\scalebox{.9}{
+\vbox{%
+\vspace{-10pt}
+\begin{table}
+\caption{Treatment Status of ACs by State}
+\input{../Figures/statetreatment.tex}
+\end{table}}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Heterogeneous effects: State}
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\scalebox{.6}{
+\vbox{%
+\vspace{-10pt}
+\begin{table}
+\input{../Figures/statehetA.tex}
+\end{table}}}
+\end{column}%
+\hfill%
+\begin{column}{.48\textwidth}
+\scalebox{.6}{
+\vbox{%
+\vspace{-10pt}
+\begin{table}
+\input{../Figures/statehetB.tex}
+\end{table}}}
+\end{column}%
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Heterogeneous effects: State}
 
 Map het effects by state
 
 \end{frame}
-
-
 %
 %
 %\begin{frame}

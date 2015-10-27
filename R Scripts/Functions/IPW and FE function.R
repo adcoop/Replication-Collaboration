@@ -29,13 +29,6 @@ IPW.FE.fxn <- function(data,voteshare2009, voteshare2014,dep_matrix,round=2){
   return(t(values))
 }
 
-# data <- dat1
-# voteshare2009 <- "voteshare_spec1_2009"
-# voteshare2014 <- "voteshare_spec1_2014"
-# interaction <- state.dummies[c(1,3:9)]
-# #interaction <- "scst_pc"
-# dep_matrix <- dep_matrix1
-# round=2
 FE.het.fxn <- function(data,voteshare2009, voteshare2014,interaction,dep_matrix,round=2, labels=c("treatany", interaction, paste0("treatany:",interaction))){
   X.FE <- cbind(1,data$treatany,data[,interaction],data$treatany*data[,interaction], data[,voteshare2009],data$num_eligible1,data$num_eligible2)
   Y.FE <- data[,voteshare2014]
@@ -49,7 +42,7 @@ FE.het.fxn <- function(data,voteshare2009, voteshare2014,interaction,dep_matrix,
   FE.rsq <- 1 - sum(FE.resid^2)/FE.sst
   values.FE <- cbind(FE.beta_hat[2:4],FE.se_hat[2:4],FE.p[2:4])
   values.FE <- rbind(values.FE,c(FE.rsq,NA,NA))
-  colnames(values.FE) <- c("ATE", "SE", "p")
+  colnames(values.FE) <- c("Coef.", "SE", "p")
   rownames(values.FE) <- c(labels,"R squared")
   values <- round(values.FE,round)
   values[is.na(values)]<-""
