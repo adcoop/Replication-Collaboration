@@ -109,7 +109,104 @@ put up their table - explain the SEs and why they're using SEs from regression a
 
 \end{frame}
 
+\begin{frame}
+\frametitle{Correcting standard errors}
+Imagine a scenario of 3 clusters with 2 units each.
+\begin{columns}[T] % align columns
+\begin{column}{.48\textwidth}
+\begin{table}[h]
+\caption{Constant error variance}
+\resizebox{\linewidth} {\height}{%
+    \setlength\tabcolsep{2pt}%
+\begin{tabular}{ c|c c c c c c|}
+ 		 &  $e_{11}$ & $e_{12}$ & $e_{21}$ & $e_{22}$ & $e_{31}$ & $e_{32}$\\ \hline
+$e_{11}$ & $\sigma^2$ & 0 	   & 0 		  & 0 		 & 0 		& 0 		\\
+$e_{12}$ & 0  		 & $\sigma^2$ & 0 		  & 0 		 & 0 		& 0 		\\
+$e_{21}$ & 0			 & 0 	   & $\sigma^2$ & 0 		 & 0 		& 0 		\\
+$e_{22}$ & 0			 & 0 	   & 0 		  & $\sigma^2$ & 0 		& 0 		\\
+$e_{31}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma^2$ & 0 		\\
+$e_{32}$ & 0			 & 0 	   & 0 		  & 0 		 & 0 		& $\sigma^2$ \\ \hline
+\end{tabular}}
+\end{table}
+\end{column}%
+\hfill%
+\begin{column}{.48\textwidth}
+\begin{table}[h]
+\caption{Not-constant error $\Sigma$}
+\resizebox{\linewidth} {\height}{%
+    \setlength\tabcolsep{2pt}%
+\begin{tabular}{ c|c c c c c c|}
+ 		 &  $e_{11}$ & $e_{12}$ & $e_{21}$ & $e_{22}$ & $e_{31}$ & $e_{32}$\\ \hline
+$e_{11}$ & $\sigma_{11}^2$ & 0 	   & 0 		  & 0 		 & 0 		& 0 		\\
+$e_{12}$ & 0  		 & $\sigma_{12}^2$ & 0 		  & 0 		 & 0 		& 0 		\\
+$e_{21}$ & 0			 & 0 	   & $\sigma_{21}^2$ & 0 		 & 0 		& 0 		\\
+$e_{22}$ & 0			 & 0 	   & 0 		  & $\sigma_{22}^2$ & 0 		& 0 		\\
+$e_{31}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma_{31}^2$ & 0 		\\
+$e_{32}$ & 0			 & 0 	   & 0 		  & 0 		 & 0 		& $\sigma_{32}^2$ \\ \hline
+\end{tabular}}
+\end{table}
+\end{column}%
+\end{columns}
+Var$(\hat{\beta})=(X'X)^{-1}(X' \Sigma X)(X'X)^{-1}$\\
+Huber-White SEs estimate $\hat{\Sigma}$ where $\sigma_i^2$ is $\hat{u}_i^2$ \\
+But, still assumes no clustered or spatial correlation
+\end{frame}
 
+\begin{frame}
+\frametitle{Correcting standard errors}
+Imagine a scenario of 3 clusters with 2 units each.\\
+Cluster-robust ``block diagonal''
+\begin{table}[h]
+\caption{Cluster robust}
+\begin{tabular}{ c|c c c c c c|}
+ 		 &  $e_{11}$ 		& $e_{12}$ 		& $e_{21}$ & $e_{22}$ & $e_{31}$ & $e_{32}$\\ \hline
+$e_{11}$ & $\sigma_{11}^2$ & $\sigma_{11}\sigma_{12}$ 	   & 0 		  & 0 		 & 0 		& 0 		\\
+$e_{12}$ & $\sigma_{12}\sigma_{11}$ & $\sigma_{12}^2$ & 0		  & 0 		 & 0 		& 0 		\\
+$e_{21}$ & 0  		 & 0 	   & $\sigma_{21}^2$ & $\sigma_{21}\sigma_{22}$	& 0 		& 0 		\\
+$e_{22}$ & 0			 & 0 	   & $\sigma_{22}\sigma_{21}$& $\sigma_{22}^2$ & 0 		& 0 		\\
+$e_{31}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma_{31}^2$ & $\sigma_{31}\sigma_{32}$\\
+$e_{32}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma_{32}\sigma_{31}$& $\sigma_{32}^2$ \\ \hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}
+\frametitle{Correcting standard errors}
+Imagine a scenario of 3 clusters with 2 units each, \\
+but Station 1 covers 11, 12, 21; Station 2 covers cluster 2; Station 3 covers cluster 3.
+\begin{table}[h]
+\caption{Barrios Dependency Matrix}
+\begin{tabular}{ c|c c c c c c|}
+ 		 &  $e_{11}$ 		& $e_{12}$ 		& $e_{21}$ & $e_{22}$ & $e_{31}$ & $e_{32}$\\ \hline
+$e_{11}$ & 1 		& 1	   & 1		  & 0 		 & 0 		& 0 		\\
+$e_{12}$ & 1  		& 1 & 1 		  & 0 		 & 0 		& 0 		\\
+$e_{21}$ & 1  		& 1	   & 1 & 1 		 & 0 		& 0 		\\
+$e_{22}$ & 0			 & 0 	   & 1 & 1 & 0 		& 0 		\\
+$e_{31}$ & 0			 & 0 	   & 0 		  & 0 		 & 1 & 1 \\
+$e_{32}$ & 0			 & 0 	   & 0 		  & 0 		 & 1 & 1 \\ \hline
+\end{tabular}
+\end{table}
+Multiply this matrix element-by-element with $\hat{u}\hat{u}'$
+\end{frame}
+
+\begin{frame}
+\frametitle{Correcting standard errors}
+Imagine a scenario of 3 clusters with 2 units each, \\
+but Station 1 covers 11, 12, 21; Station 2 covers cluster 2; Station 3 covers cluster 3.
+\begin{table}[h]
+\caption{Barrios $\hat{\Sigma}$}
+\begin{tabular}{ c|c c c c c c|}
+ 		 &  $e_{11}$ 		& $e_{12}$ 		& $e_{21}$ & $e_{22}$ & $e_{31}$ & $e_{32}$\\ \hline
+$e_{11}$ & $\sigma_{11}^2$ & $\sigma_{11}\sigma_{12}$ 	   & $\sigma_{11}\sigma_{21}$ 		  & 0 		 & 0 		& 0 		\\
+$e_{12}$ & $\sigma_{12}\sigma_{11}$  	 & $\sigma_{12}^2$ & $\sigma_{12}\sigma_{21}$ 		  & 0 		 & 0 		& 0 		\\
+$e_{21}$ & $\sigma_{21}\sigma_{11}$  	& $\sigma_{21}\sigma_{12}$ 	   & $\sigma_{21}^2$ & $\sigma_{21}\sigma_{22}$ 		 & 0 		& 0 		\\
+$e_{22}$ & 0			 & 0 	   & $\sigma_{22}\sigma_{21}$& $\sigma_{22}^2$ & 0 		& 0 		\\
+$e_{31}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma_{31}^2$ & $\sigma_{31}\sigma_{32}$\\
+$e_{32}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma_{32}\sigma_{31}$& $\sigma_{32}^2$ \\ \hline
+\end{tabular}
+\end{table}
+Var$(\hat{\beta})=(X'X)^{-1}(X' \hat{\Sigma} X)(X'X)^{-1}$\\
+\end{frame}
 
 \begin{frame}
 \frametitle{Main results replicate}
