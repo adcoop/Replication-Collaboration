@@ -52,7 +52,8 @@ IPW1.omega_hat <- dep_matrix*(IPW1.resid %*% t(IPW1.resid))
 IPW1.vhat <- solve(t(X.IPW1)%*%X.IPW1) %*% (t(X.IPW1) %*% IPW1.omega_hat %*% X.IPW1) %*% solve(t(X.IPW1)%*%X.IPW1) 
 IPW1.sd_hat <- sqrt(diag(IPW1.vhat))
 IPW1.sd_hat
-IPW1.p = 1 - pnorm(abs(IPW1.beta_hat[2]/IPW1.sd_hat[2]))
+IPW1.p <- 1 - pnorm(abs(IPW1.beta_hat[2]/IPW1.sd_hat[2]))
+IPW1.p
 
 # FE - Spec 1 (Table 6 Column 2)
 FE1 = (lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1))

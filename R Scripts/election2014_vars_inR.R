@@ -29,7 +29,6 @@ PC.results <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/2. El
 # Read Sample Data
 AC.expt.sample <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/3. Sample Data/AC_expt_sample.dta")
 
-
 ##########
 ## build defn of vote buyers 
 ## adapted from votebuyer_specs.do
@@ -412,20 +411,33 @@ voteshare_data <- inner_join(voteshare_data,
                              select(AC.expt.sample, -pc_name, -ac_name),
                             by = c('state_name', 'ac_num'))
 
+## gen num_eligible var
+table(voteshare_data$num_eligible)
+voteshare_data$num_eligible1 <- 0
+voteshare_data$num_eligible1[voteshare_data$num_eligible==1] <- 1
+voteshare_data$num_eligible2 <- 0
+voteshare_data$num_eligible2[voteshare_data$num_eligible==2] <- 1
+voteshare_data$num_eligible3 <- 0
+voteshare_data$num_eligible3[voteshare_data$num_eligible==3] <- 1
+
+## gen state election var
+voteshare_data$state_election <- 0
+voteshare_data$state_election[voteshare_data$state_name=="Andhra Pradesh" | voteshare_data$state_name=="Orissa"] <- 1
+
 ## write to csv for each specification
 voteshare_data1 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
                           grep("_spec1_", colnames(voteshare_data)),
-                          station_name1:wgt_treatany)
+                          station_name1:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
   ## subset to only ACs where we have voting data 
 voteshare_data1 <- filter(voteshare_data1, num_spec1_2014>0)
 write.csv(voteshare_data1, 'Data/voteshare1.csv')
 voteshare_data2 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
                           grep("_spec2_", colnames(voteshare_data)),
-                          station_name2:wgt_treatany)
+                          station_name2:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
 write.csv(voteshare_data2, 'Data/voteshare2.csv')
 voteshare_data3 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
                           grep("_spec3_", colnames(voteshare_data)),
-                          station_name2:wgt_treatany)
+                          station_name2:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
 write.csv(voteshare_data3, 'Data/voteshare3.csv')
 
 
@@ -462,6 +474,15 @@ elec <- left_join(elec,
                          rural_pc, scst_pc, poll_date, station_id1, station_id2,
                          station_id3, prob_treatany),
                   by = c('state_name', 'ac_num', 'ac_name'))
+
+## gen num_eligible var
+table(elec$num_eligible)
+elec$num_eligible1 <- 0
+elec$num_eligible1[elec$num_eligible==1] <- 1
+elec$num_eligible2 <- 0
+elec$num_eligible2[elec$num_eligible==2] <- 1
+elec$num_eligible3 <- 0
+elec$num_eligible3[elec$num_eligible==3] <- 1
 
 ## gen state election var
 elec$state_election <- 0
@@ -515,10 +536,10 @@ merge <- inner_join(merge,
                     select(voteshare.data, -total_ac_votes, -X),
                     by=c("state_name", "pc_name", "ac_name", "ac_num"))
 merge <- left_join(merge, 
-                   select(turnout.data, state_name:turnoutrate_2009, state_election),
+                   select(turnout.data, state_name:turnoutrate_2009, state_election, num_eligible1, num_eligible2, num_eligible3),
                    by=c("state_name", "ac_num", 'ac_name'))
 merge$electors_2014 <- merge$ac_electors
-
+names(merge)
 ## write to csv
 write.csv(merge, "Data/election2014_data.csv")
 
