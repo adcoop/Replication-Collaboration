@@ -15,7 +15,9 @@ library(dplyr)
 setwd('~/Desktop/Replication Collaboration Clone')
 
 dat1 <- read.csv("Data/voteshare1.csv")
-# dat1o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
+dat1o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
+
+names(dat1)
 
 ## set up omega matrix
 N <- dim(dat1)[1]
@@ -56,7 +58,7 @@ IPW1.p <- 1 - pnorm(abs(IPW1.beta_hat[2]/IPW1.sd_hat[2]))
 IPW1.p
 
 # FE - Spec 1 (Table 6 Column 2)
-FE1 = (lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1))
+FE1 = (lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1o))
 summary(FE1)
 ATE.FE1 <- coefficients(FE1)[2]
 print(ATE.FE1)

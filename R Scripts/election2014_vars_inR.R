@@ -47,6 +47,7 @@ PC.sample$in_sample <- 1
 
 ## merge PC sample list into journalist data
 journalist <- left_join(journalist,PC.sample, by=c("state_name", "pc_name"))
+journalist$in_sample[is.na(journalist$in_sample)] <- 0
 
 ## merge election schedule into journalist data
 journalist <- left_join(journalist,ECI.sched.clean, by=c("state_name", "pc_name"))
@@ -56,8 +57,15 @@ journalist$win_2[journalist$win_1==journalist$win_2] <- ""
 journalist$resp_secret[journalist$secret_1==""] <- 0
 journalist$resp_secret[journalist$secret_1!=""] <- 1
 
+## Compare to STATA dta
+journalist.data.nopii.clean.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/journalist_data_nopii_clean.dta")
+names(journalist.data.nopii.clean.GV)
+summary(journalist$actual_cand_voteshare1)
+summary(journalist.data.nopii.clean.GV$actual_cand_voteshare1)
+
 ## output journalist.data.nopii.clean
 write.csv(journalist, "Data/journalist.data.nopii.clean.csv")
+
 
 
 # create affiliations
@@ -105,6 +113,13 @@ journalist.sample <- filter(journalist.sample, party_ally!="") %>%
   select(-secret) %>% 
   arrange(state_name, pc_name, party_ally)
 journalist.sample <- unique(journalist.sample)
+
+## Compare to GV STATA output
+votebuyers.spec1.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/votebuyers_spec1.dta")
+names(votebuyers.spec1.GV)
+names(journalist.sample)
+table(votebuyers.spec1.GV$party_name)
+table(journalist.sample$party_ally)
 
 ## write to csv
 write.csv(journalist.sample, "Data/votebuyers_spec1.csv")
