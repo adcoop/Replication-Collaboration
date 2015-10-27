@@ -448,11 +448,11 @@ voteshare_data1 <- filter(voteshare_data1, num_spec1_2014>0)
 write.csv(voteshare_data1, 'Data/voteshare1.csv')
 voteshare_data2 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
                           grep("_spec2_", colnames(voteshare_data)),
-                          station_name2:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
+                          station_name1:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
 write.csv(voteshare_data2, 'Data/voteshare2.csv')
 voteshare_data3 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
                           grep("_spec3_", colnames(voteshare_data)),
-                          station_name2:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
+                          station_name1:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
 write.csv(voteshare_data3, 'Data/voteshare3.csv')
 
 
