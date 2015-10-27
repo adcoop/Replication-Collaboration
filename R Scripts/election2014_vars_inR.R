@@ -29,6 +29,7 @@ PC.results <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/2. El
 # Read Sample Data
 AC.expt.sample <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/3. Sample Data/AC_expt_sample.dta")
 
+
 ##########
 ## build defn of vote buyers 
 ## adapted from votebuyer_specs.do
@@ -57,15 +58,14 @@ journalist$win_2[journalist$win_1==journalist$win_2] <- ""
 journalist$resp_secret[journalist$secret_1==""] <- 0
 journalist$resp_secret[journalist$secret_1!=""] <- 1
 
-## Compare to STATA dta
-journalist.data.nopii.clean.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/journalist_data_nopii_clean.dta")
-names(journalist.data.nopii.clean.GV)
-summary(journalist$actual_cand_voteshare1)
-summary(journalist.data.nopii.clean.GV$actual_cand_voteshare1)
+# ## Compare to STATA dta
+# journalist.data.nopii.clean.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/journalist_data_nopii_clean.dta")
+# names(journalist.data.nopii.clean.GV)
+# summary(journalist$actual_cand_voteshare1)
+# summary(journalist.data.nopii.clean.GV$actual_cand_voteshare1)
 
 ## output journalist.data.nopii.clean
 write.csv(journalist, "Data/journalist.data.nopii.clean.csv")
-
 
 
 # create affiliations
@@ -114,12 +114,12 @@ journalist.sample <- filter(journalist.sample, party_ally!="") %>%
   arrange(state_name, pc_name, party_ally)
 journalist.sample <- unique(journalist.sample)
 
-## Compare to GV STATA output
-votebuyers.spec1.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/votebuyers_spec1.dta")
-names(votebuyers.spec1.GV)
-names(journalist.sample)
-table(votebuyers.spec1.GV$party_name)
-table(journalist.sample$party_ally)
+# ## Compare to GV STATA output
+# votebuyers.spec1.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/votebuyers_spec1.dta")
+# names(votebuyers.spec1.GV)
+# names(journalist.sample)
+# table(votebuyers.spec1.GV$party_name)
+# table(journalist.sample$party_ally)
 
 ## write to csv
 write.csv(journalist.sample, "Data/votebuyers_spec1.csv")
@@ -199,17 +199,17 @@ elec2014$party_name[elec2014$party_name %in% c("INC","NCP","RJD","RLD","JMM")] <
 ## create dummies for vote buying parties at diff levels of jouranlist concordance
 cuts <- seq(0,0.9,0.1)
 for (i in 1:10){
-  votebuyers.spec1$vb[votebuyers.spec1$pct_nda > cuts[i] & votebuyers.spec1$party_ally=="NDA"] <- 1
-  votebuyers.spec1$vb[votebuyers.spec1$pct_upa > cuts[i] & votebuyers.spec1$party_ally=="UPA"] <- 1
-  votebuyers.spec1$vb[votebuyers.spec1$pct_oth > cuts[i] & votebuyers.spec1$party_ally!="NDA" & votebuyers.spec1$party_ally!="UPA"] <- 1
+  votebuyers.spec1$vb[votebuyers.spec1$pct_nda >= cuts[i] & votebuyers.spec1$party_ally=="NDA"] <- 1
+  votebuyers.spec1$vb[votebuyers.spec1$pct_upa >= cuts[i] & votebuyers.spec1$party_ally=="UPA"] <- 1
+  votebuyers.spec1$vb[votebuyers.spec1$pct_oth >= cuts[i] & votebuyers.spec1$party_ally!="NDA" & votebuyers.spec1$party_ally!="UPA"] <- 1
   setnames(votebuyers.spec1, 'vb', paste0('votebuyer_1_', cuts[i]))
-  votebuyers.spec2$vb[votebuyers.spec2$pct_nda > cuts[i] & votebuyers.spec2$party_ally=="NDA"] <- 1
-  votebuyers.spec2$vb[votebuyers.spec2$pct_upa > cuts[i] & votebuyers.spec2$party_ally=="UPA"] <- 1
-  votebuyers.spec2$vb[votebuyers.spec2$pct_oth > cuts[i] & votebuyers.spec2$party_ally!="NDA" & votebuyers.spec2$party_ally!="UPA"] <- 1
+  votebuyers.spec2$vb[votebuyers.spec2$pct_nda >= cuts[i] & votebuyers.spec2$party_ally=="NDA"] <- 1
+  votebuyers.spec2$vb[votebuyers.spec2$pct_upa >= cuts[i] & votebuyers.spec2$party_ally=="UPA"] <- 1
+  votebuyers.spec2$vb[votebuyers.spec2$pct_oth >= cuts[i] & votebuyers.spec2$party_ally!="NDA" & votebuyers.spec2$party_ally!="UPA"] <- 1
   setnames(votebuyers.spec2, 'vb', paste0('votebuyer_2_', cuts[i]))
-  votebuyers.spec3$vb[votebuyers.spec3$pct_nda > cuts[i] & votebuyers.spec3$party_ally=="NDA"] <- 1
-  votebuyers.spec3$vb[votebuyers.spec3$pct_upa > cuts[i] & votebuyers.spec3$party_ally=="UPA"] <- 1
-  votebuyers.spec3$vb[votebuyers.spec3$pct_oth > cuts[i] & votebuyers.spec3$party_ally!="NDA" & votebuyers.spec3$party_ally!="UPA"] <- 1
+  votebuyers.spec3$vb[votebuyers.spec3$pct_nda >= cuts[i] & votebuyers.spec3$party_ally=="NDA"] <- 1
+  votebuyers.spec3$vb[votebuyers.spec3$pct_upa >= cuts[i] & votebuyers.spec3$party_ally=="UPA"] <- 1
+  votebuyers.spec3$vb[votebuyers.spec3$pct_oth >= cuts[i] & votebuyers.spec3$party_ally!="NDA" & votebuyers.spec3$party_ally!="UPA"] <- 1
   setnames(votebuyers.spec3, 'vb', paste0('votebuyer_3_', cuts[i]))
 }
 
@@ -554,7 +554,7 @@ merge <- left_join(merge,
                    select(turnout.data, state_name:turnoutrate_2009, state_election, num_eligible1, num_eligible2, num_eligible3),
                    by=c("state_name", "ac_num", 'ac_name'))
 merge$electors_2014 <- merge$ac_electors
-names(merge)
+
 ## write to csv
 write.csv(merge, "Data/election2014_data.csv")
 
