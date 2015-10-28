@@ -139,7 +139,7 @@ journalist.sample <- journalist.sample %>%
 
 ## reshape to create list of votebuyers by PC
 journalist.sample <- journalist.sample %>% 
-  select(state_name, pct_nda:pct_oth, poll_date, secret_1_ally:secret_4_ally) %>% 
+  select(state_name, poll_date, pct_nda:pct_oth, secret_1_ally:secret_4_ally) %>% 
   gather(secret, party_ally, -state_name, -poll_date, -pct_nda, -pct_upa, -pct_oth)
 journalist.sample <- filter(journalist.sample, party_ally!="") %>% 
   select(-secret) %>% 

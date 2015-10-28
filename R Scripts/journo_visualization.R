@@ -9,6 +9,10 @@ library(dplyr)
 library(foreign)
 library(readstata13)
 library(data.table)
+library(maptools)
+
+## set wd
+setwd('~/Desktop/Replication Collaboration Clone')
 
 # read in journalist data
 datj <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Input Data/journalist_data_nopii.dta")
@@ -41,36 +45,36 @@ datj$oth_vb <- ifelse(grepl("AAAP|AJSUP|BJD|BSP|BVA|JBSP|JD(S)|JKP|JVM|SP|TRS|YS
 datj_pc <- datj %>% group_by(state_name, pc_name) %>% summarize(pct_nda = mean(nda_vb, na.rm=T), pct_upa = mean(upa_vb, na.rm=T), pct_oth = mean(oth_vb, na.rm=T))
 
 ## plot histograms of vote buying claims by journos for each coalition by PC
-pdf("~/Desktop/Replication Collaboration Clone/Figures/journalist_concurrence_nda.pdf")
+pdf("Figures/journalist_concurrence_nda.pdf")
 hist(datj_pc$pct_nda, main = "Pct of Journalists Naming NDA 
      as Vote Buyer by PC", xlab = "Pct Journalists", cex.lab = 2, cex.main = 2, cex.axis = 2)
 dev.off()
-pdf("~/Desktop/Replication Collaboration Clone/Figures/journalist_concurrence_upa.pdf")
+pdf("Figures/journalist_concurrence_upa.pdf")
 hist(datj_pc$pct_upa, main = "Pct of Journalists Naming UPA 
      as Vote Buyer by PC", xlab = "Pct Journalists", cex.lab = 2, cex.main = 2, cex.axis = 2)
 dev.off()
 
 
 ## read in maps for states
-m <- readShapePoly("~/Downloads/indiamap/andhrapradesh/andhrapradesh.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/andhrapradesh/andhrapradesh.parliamentary.shp")
 m1 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/bihar/bihar.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/bihar/bihar.parliamentary.shp")
 m2 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/chhattisgarh/chhattisgarh.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/chhattisgarh/chhattisgarh.parliamentary.shp")
 m3 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/jharkhand/jharkhand.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/jharkhand/jharkhand.parliamentary.shp")
 m4 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/madhyapradesh/madhyapradesh.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/madhyapradesh/madhyapradesh.parliamentary.shp")
 m5 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/maharashtra/maharashtra.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/maharashtra/maharashtra.parliamentary.shp")
 m6 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/orissa/orissa.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/orissa/orissa.parliamentary.shp")
 m7 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/rajasthan/rajasthan.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/rajasthan/rajasthan.parliamentary.shp")
 m8 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/uttarpradesh/uttarpradesh.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/uttarpradesh/uttarpradesh.parliamentary.shp")
 m9 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
-m <- readShapePoly("~/Downloads/indiamap/karnataka/karnataka.parliamentary.shp")
+m <- readShapePoly("Maps/indiamap/karnataka/karnataka.parliamentary.shp")
 m10 <- spChFIDs(m, paste(m$state, m$pc, sep = ""))
 
 map <- spRbind(m1, spRbind(m2, spRbind(m3, spRbind(m4, spRbind(m5, spRbind(m6, spRbind(m7, spRbind(m8, spRbind(m9, m10)))))))))
@@ -101,17 +105,17 @@ dat <- arrange(dat, sort)
 map@data <- dat
 
 ## output the maps for NDA, UPA and other
-pdf("~/Desktop/Replication Collaboration Clone/Figures/nda_vb_map.pdf")
+jpeg("Figures/nda_vb_map.jpg")
 spplot(map, 'pct_nda', at = seq(0,1,0.1), col.regions = rev(heat.colors(10)), 
        colorkey=list(space="bottom"),
        main = "Pct Journalists Reporting NDA Vote Buying by PC")
 dev.off()
-pdf("~/Desktop/Replication Collaboration Clone/Figures/upa_vb_map.pdf")
+jpeg("Figures/upa_vb_map.jpg")
 spplot(map, 'pct_upa', at = seq(0,1,0.1), col.regions = rev(terrain.colors(10)), 
        colorkey=list(space="bottom"),
        main = "Pct Journalists Reporting UPA Vote Buying by PC")
 dev.off()
-pdf("~/Desktop/Replication Collaboration Clone/Figures/oth_vb_map.pdf")
+jpeg("Figures/oth_vb_map.jpg")
 spplot(map, 'pct_oth', at = seq(0,1,0.1), col.regions = rev(topo.colors(10)), 
        colorkey=list(space="bottom"),
        main = "Pct Journalists Reporting Other Parties Vote Buying by PC")

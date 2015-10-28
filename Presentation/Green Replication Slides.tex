@@ -86,7 +86,8 @@ brief discussion of theory
 \begin{frame}
 \frametitle{Design}
 
-Intervention description \\
+Intervention:
+
 Does this really test the theory that you've laid out?
 
 \end{frame}
@@ -94,20 +95,39 @@ Does this really test the theory that you've laid out?
 
 
 \begin{frame}
-\frametitle{Replication process}
+\frametitle{Suggestions for replication package}
 
-Matlab + Stata code \\
-No roadmap of order in which code needs to be run to replicate main results 
+\begin{itemize}
+\item Code written in Matlab + Stata
+\begin{itemize}
+\item Randomization - Stata
+\item Data Building - Stata
+\item Regressions - Matlab
+\item Standard Errors - Matlab
+\item Randomization Inference Simulations - Stata
+\item p-values - Matlab
+\end{itemize}
+\item Possible to do everything in R
+\item Include a roadmap (master R file, markdown, etc)
+\end{itemize}
 
 \end{frame}
+
+
 
 
 \begin{frame}
 \frametitle{Main results from the paper}
 
-put up their table - explain the SEs and why they're using SEs from regression and p-values from RI
+\begin{figure}
+\centering
+\includegraphics[width=.8\textwidth]{../Figures/table6.pdf}
+\end{figure}
 
 \end{frame}
+
+
+
 
 \begin{frame}
 \frametitle{Correcting standard errors}
@@ -208,55 +228,164 @@ $e_{32}$ & 0			 & 0 	   & 0 		  & 0 		 & $\sigma_{32}\sigma_{31}$& $\sigma_{32}^
 Var$(\hat{\beta})=(X'X)^{-1}(X' \hat{\Sigma} X)(X'X)^{-1}$\\
 \end{frame}
 
-\begin{frame}
-\frametitle{Main results replicate}
 
-put up our table
+
+
+
+\begin{frame}
+\frametitle{Main results from the paper}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lcccccc}
+  \hline 
+  & \multicolumn{2}{c}{Spec 1} &  \multicolumn{2}{c}{Spec 2} & \multicolumn{2}{c}{Spec 3} \\
+ & IPW & FE & IPW & FE & IPW & FE \\ 
+  \hline
+ATE & -5.86 & -6.04 & -7.68 & -7.73 & -3.68 & -3.41 \\ 
+  SE & 3.97 & 4.08 & 3.92 & 4.18 & 1.92 & 2.04 \\ 
+  p-value (Barrios) & 0.07 & 0.07 & 0.03 & 0.03 & 0.03 & 0.05 \\ 
+  p-value (RI) & 0.08 & 0.08 & 0.00 & 0.00 & 0.02 & 0.03 \\ 
+  R$^2$ & 0.44 & 0.43 & 0.38 & 0.28 & 0.51 & 0.33 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
 
 \end{frame}
+
+
 
 
 
 \begin{frame}
 \frametitle{What does it mean to be a vote buying party?}
 
-histograms of number of journalists identifying parties as vote buyers
-
-\end{frame}
-
-
-\begin{frame}
-\frametitle{What does it mean to be a vote buying party?}
-
-maps of number of journalists identifying parties as vote buyers
-
-\end{frame}
-
-
-\begin{frame}
-\frametitle{What does it mean to be a vote buying party?}
-
-discussion of dgp for journalists calling a party a vote buyer - innovation of this measure and limitations
-discussion of what the right cutpoint is - 100\% of journalists? any?  
+\begin{itemize}
+\item Very innovative measure of illicit electoral technique
+\begin{itemize}
+\item Cost-effective 
+\item Draws on local expertise
+\item Covers comprehensive area
+\end{itemize}
+\item What is the data generating process?
+\begin{itemize}
+\item Journalistic ethics to tell the truth
+\item Journalists have ideological biases?
+\item Journalists pay more attention to major parties?
+\end{itemize}
+\item How to think about uncertainty with journalist data?
+\begin{itemize}
+\item Levels of informedness
+\item Under-identification
+\item Over-identification
+\item Random noise
+\end{itemize}
+\end{itemize}
  
 \end{frame}
 
 
+
 \begin{frame}
 \frametitle{What does it mean to be a vote buying party?}
 
-regression of 
+\begin{figure}
+\begin{subfigure}{0.45\textwidth}
+%\caption{NDA}
+\centering
+\includegraphics[width=1\textwidth]{../Figures/journalist_concurrence_nda}
+\end{subfigure}%
+\begin{subfigure}{0.45\textwidth}
+%\caption{UPA}
+\centering
+\includegraphics[width=1\textwidth]{../Figures/journalist_concurrence_upa}
+\end{subfigure}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What does it mean to be a vote buying party?}
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{../Figures/nda_vb_map}
+\end{figure}
 
 \end{frame}
 
 
 
 \begin{frame}
-\frametitle{Are the results sensitive to the defn of vote buying party?}
+\frametitle{What does it mean to be a vote buying party?}
 
-plot coefficients from range of cutpoints for defn of vote buying party 
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{../Figures/upa_vb_map}
+\end{figure}
 
 \end{frame}
+
+
+
+\begin{frame}
+\frametitle{What does it mean to be a vote buying party?}
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{../Figures/oth_vb_map}
+\end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{What does it mean to be a vote buying party?}
+
+\begin{figure}
+\centering
+\includegraphics<1>[width=.6\textwidth]{../Figures/new_vb_defn_0}
+\includegraphics<2>[width=.6\textwidth]{../Figures/new_vb_defn_1}
+\includegraphics<3>[width=.6\textwidth]{../Figures/new_vb_defn_2}
+\includegraphics<4>[width=.6\textwidth]{../Figures/new_vb_defn_3}
+\includegraphics<5>[width=.6\textwidth]{../Figures/new_vb_defn_4}
+\includegraphics<6>[width=.6\textwidth]{../Figures/new_vb_defn_5}
+\includegraphics<7>[width=.6\textwidth]{../Figures/new_vb_defn_6}
+\includegraphics<8>[width=.6\textwidth]{../Figures/new_vb_defn_7}
+\includegraphics<9>[width=.6\textwidth]{../Figures/new_vb_defn_8}
+\includegraphics<10>[width=.6\textwidth]{../Figures/new_vb_defn_9}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Robustness to the definition of vote buying party}
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{../Figures/coef_journo_defn}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Robustness to the definition of vote buying party}
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{../Figures/p_journo_defn}
+\end{figure}
+
+\end{frame}
+
 
 
 \begin{frame}

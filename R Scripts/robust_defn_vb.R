@@ -25,6 +25,14 @@ dat1o <- data.frame('voteshare_spec1_2014o' = dat1o$voteshare_spec1_2014,
                     'state_name' = dat1o$state_name, 'ac_num' = dat1o$ac_num)
 dat1 <- left_join(dat1, dat1o, by = c('state_name', 'ac_num'))
 
+dat2 <- read.csv("Data/voteshare2.csv")
+dat2o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare2.csv")
+dat2o <- data.frame('voteshare_spec2_2014o' = dat1o$voteshare_spec2_2014, 
+                    'voteshare_spec2_2009o' = dat1o$voteshare_spec2_2009, 
+                    'state_name' = dat1o$state_name, 'ac_num' = dat1o$ac_num)
+dat2 <- left_join(dat2, dat2o, by = c('state_name', 'ac_num'))
+
+
 ## visualize the differences between defns
 pdf("Figures/new_vb_defn_0.pdf")
 par(mar=c(5,5,3,2))
@@ -104,29 +112,34 @@ for (i in 1:10){
 
 out$up90 <- out$coef + 1.64*out$se
 out$lo90 <- out$coef - 1.64*out$se
+out$up95 <- out$coef + 1.96*out$se
+out$lo95 <- out$coef - 1.96*out$se
 
 pdf("Figures/coef_journo_defn.pdf")
-plot(x = seq(1,10), y = out$coef, cex = 2, col = 'red', pch = 16,
-     mar=c(2,2,2,2), ylim = c(min(out$lo90), max(out$up90)),
+par(mar=c(5,5,3,3))
+plot(x = seq(1,10), y = out$coef, cex = 2, col = 'red', pch = 16, 
+     cex.axis = 1.8, cex.lab = 1.8, cex.main = 2,
+     mar=c(2,2,2,2), ylim = c(min(out$lo95), max(out$up95)),
      ylab = 'Average Treatment Effect',
      xaxt = "n", xlab = "Proportion Journalists Identifying as Vote Buyer")
-axis(side = 1, at = seq(1,10,1),
+axis(side = 1, at = seq(1,10,1), cex.axis = 1.4,
      labels = c('any', '>10%', '>20%', '>30%', '>40%', ">50%", '>60%', '>70%', '>80%', '>90%'))
 for (i in 1:10){
-  lines(x = rep(i, 2), y = c(out$up90[i], out$lo90[i]), lwd = 3, col = 'red')
+  lines(x = rep(i, 2), y = c(out$up90[i], out$lo90[i]), lwd = 6, col = 'red')
+  lines(x = rep(i, 2), y = c(out$up95[i], out$lo95[i]), lwd = 4, col = 'red')
 }
 abline(h=0, lty = 2)
 dev.off()
 
 pdf("Figures/p_journo_defn.pdf")
-plot(x = seq(1:10), y = out$p.bar, type = "l", lty = 3, col = 'blue', lwd = 2, 
+plot(x = seq(1:10), y = out$p.bar, type = "l", lty = 3, col = 'blue', lwd = 3, 
      ylim = c(0,0.6), xaxt = "n", ylab = 'p-value', 
-     xlab = 'Proportion Journalists Identifying as Vote Buyer', cex.lab = 2, cex.axis = 2)
-lines(x = seq(1:10), y = out$p.ri, lty = 4, col = 'green', lwd = 2)
+     xlab = 'Proportion Journalists Identifying as Vote Buyer', cex.lab = 1.8, cex.axis = 1.8)
+lines(x = seq(1:10), y = out$p.ri, lty = 4, col = 'green', lwd = 3)
 abline(h = .1, lty = 2)
-axis(side = 1, at = seq(1,10,1), cex.axis = 2, cex.lab = 2,
+axis(side = 1, at = seq(1,10,1), cex.axis = 1.4, cex.lab = 2,
      labels = c('any', '>10%', '>20%', '>30%', '>40%', ">50%", '>60%', '>70%', '>80%', '>90%'))
-legend('topleft', lty = c(3,4), lwd =2, col = c('blue', 'green'), 
+legend('topleft', lty = c(3,4), lwd =3, col = c('blue', 'green'), 
        legend = c('Barrios', 'RI'), cex = 2)
 dev.off()
 
