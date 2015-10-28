@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  27 OCT 2015 15:10
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  27 OCT 2015 19:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1043,7 +1043,11 @@ File: pgflibraryarrows.code.tex 2008/10/27 v2.10 (rcs-revision 1.9)
 \arrowsize=\dimen223
 ))
 \c@myenumi=\count185
- (./Green Replication Slides.aux)
+ (./Green Replication Slides.aux
+
+LaTeX Warning: Label `' multiply defined.
+
+)
 \openout1 = `"Green Replication Slides.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
@@ -1250,13 +1254,78 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 
 ] [18
 
-] [19
+] (../Figures/hetrur90.tex
+Overfull \hbox (31.20274pt too wide) in paragraph at lines 3--13
+ [][] 
+ []
 
-] [20
+) (../Figures/hetrurpc.tex
+Overfull \hbox (35.1569pt too wide) in paragraph at lines 3--13
+ [][] 
+ []
 
-] [21
+) <../Figures/histrurpc.pdf, id=129, 361.35pt x 361.35pt>
+File: ../Figures/histrurpc.pdf Graphic file (type pdf)
 
-] [22
+<use ../Figures/histrurpc.pdf>
+Package pdftex.def Info: ../Figures/histrurpc.pdf used on input line 302.
+(pdftex.def)             Requested size: 162.60599pt x 162.60599pt.
+
+Overfull \hbox (15.10817pt too wide) in paragraph at lines 302--302
+[][]  
+ []
+
+[19
+
+ <../Figures/histrurpc.pdf>] (../Figures/hetsc50.tex
+Overfull \hbox (37.71191pt too wide) in paragraph at lines 3--13
+ [][] 
+ []
+
+) (../Figures/hetscstpc.tex
+Overfull \hbox (41.66608pt too wide) in paragraph at lines 3--13
+ [][] 
+ []
+
+) <../Figures/histscstpc.pdf, id=142, 361.35pt x 361.35pt>
+File: ../Figures/histscstpc.pdf Graphic file (type pdf)
+
+<use ../Figures/histscstpc.pdf>
+Package pdftex.def Info: ../Figures/histscstpc.pdf used on input line 325.
+(pdftex.def)             Requested size: 162.60599pt x 162.60599pt.
+
+Overfull \hbox (15.10817pt too wide) in paragraph at lines 325--325
+[][]  
+ []
+
+[20
+
+ <../Figures/histscstpc.pdf>] [21
+
+] (../Figures/statetreatment.tex) [22
+
+]
+(../Figures/statehetA.tex
+
+Package hyperref Warning: Ignoring empty anchor on input line 6.
+
+
+Overfull \hbox (81.45364pt too wide) in paragraph at lines 7--30
+ [] 
+ []
+
+) (../Figures/statehetB.tex
+
+Package hyperref Warning: Ignoring empty anchor on input line 6.
+
+
+Overfull \hbox (122.08073pt too wide) in paragraph at lines 7--30
+ [] 
+ []
+
+) [23
+
+] [24
 
 ]
 \tf@nav=\write6
@@ -1268,12 +1337,11 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 \tf@snm=\write8
 \openout8 = `"Green Replication Slides.snm"'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1713.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1713.
-
-(./Green Replication Slides.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1713.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1713.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1780.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1780.
+ (./Green Replication Slides.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1780.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1780.
 
 Package rerunfilecheck Info: File `"Green Replication Slides".out' has not chan
 ged.
@@ -1283,27 +1351,32 @@ ged.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1713.
+
+LaTeX Warning: There were multiply-defined labels.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1780.
  ) 
 Here is how much of TeX's memory you used:
- 23473 strings out of 493315
- 462753 string characters out of 6137904
- 624140 words of memory out of 5000000
- 26298 multiletter control sequences out of 15000+600000
- 11438 words of font info for 50 fonts, out of 8000000 for 9000
+ 23523 strings out of 493315
+ 463622 string characters out of 6137904
+ 624204 words of memory out of 5000000
+ 26315 multiletter control sequences out of 15000+600000
+ 12000 words of font info for 53 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 49i,15n,69p,436b,737s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 49i,16n,69p,436b,828s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 ></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><
 /usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
 sr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
 /local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/lo
 cal/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local
-/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on "Green Replication Slides.pdf" (22 pages, 99838 bytes).
+/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/
+texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/te
+xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on "Green Replication Slides.pdf" (24 pages, 133531 bytes).
 PDF statistics:
- 187 PDF objects out of 1000 (max. 8388607)
- 132 compressed objects within 2 object streams
- 45 named destinations out of 1000 (max. 500000)
- 8331 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 220 PDF objects out of 1000 (max. 8388607)
+ 157 compressed objects within 2 object streams
+ 49 named destinations out of 1000 (max. 500000)
+ 10389 words of extra memory for PDF output out of 12000 (max. 10000000)
 
