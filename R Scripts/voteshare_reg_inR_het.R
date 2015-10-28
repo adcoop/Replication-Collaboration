@@ -87,6 +87,7 @@ cat(stargazer(FE.poll, single.row = T,  dep.var.labels = "Vote Share VB 2014", n
               covariate.labels = covlabels), file="Figures/pollhet.tex", sep="\n")
 
 
+cat(print(xtable(table(dat1$poll_date, dat1$state_name)),floating = F), file="Figures/pollstate.tex", sep="\n")
 
 # Competition -------------------------------------------------------------
 elec <- read.csv("Data/marginvictory_data.csv")
