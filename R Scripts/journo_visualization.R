@@ -43,11 +43,11 @@ datj_pc <- datj %>% group_by(state_name, pc_name) %>% summarize(pct_nda = mean(n
 ## plot histograms of vote buying claims by journos for each coalition by PC
 pdf("~/Desktop/Replication Collaboration Clone/Figures/journalist_concurrence_nda.pdf")
 hist(datj_pc$pct_nda, main = "Pct of Journalists Naming NDA 
-     as Vote Buyer by PC", xlab = "Pct Journalists")
+     as Vote Buyer by PC", xlab = "Pct Journalists", cex.lab = 2, cex.main = 2, cex.axis = 2)
 dev.off()
 pdf("~/Desktop/Replication Collaboration Clone/Figures/journalist_concurrence_upa.pdf")
 hist(datj_pc$pct_upa, main = "Pct of Journalists Naming UPA 
-     as Vote Buyer by PC", xlab = "Pct Journalists")
+     as Vote Buyer by PC", xlab = "Pct Journalists", cex.lab = 2, cex.main = 2, cex.axis = 2)
 dev.off()
 
 

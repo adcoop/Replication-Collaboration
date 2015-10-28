@@ -25,6 +25,8 @@ plot(dat2$voteshare_spec2_2014, dat2o$voteshare_spec2_2014)
 
 source("R Scripts/Functions/omegamatrix.R")
 source("R Scripts/Functions/IPW and FE function.R")
+source("R Scripts/Functions/ri_fxn.R")
+
 dep_matrix1 <- omegamatrix(dat1)
 dep_matrix2 <- omegamatrix(dat2)
 dep_matrix2o <- omegamatrix(dat2o)
@@ -35,48 +37,25 @@ Spec1 <- IPW.FE.fxn(dat1, "voteshare_spec1_2009", "voteshare_spec1_2014", dep_ma
 Spec2 <- IPW.FE.fxn(dat2, "voteshare_spec2_2009", "voteshare_spec2_2014", dep_matrix2)
 Spec3 <- IPW.FE.fxn(dat3, "voteshare_spec3_2009", "voteshare_spec3_2014", dep_matrix3)
 
-Spectable <- cbind(Spec1, Spec2, Spec3)
+Spec1.ipw.ri <- ri(dat1, Z = 'treatany', Y = 'voteshare_spec1_2014',
+               cov = 'voteshare_spec1_2009', prob = 'prob_treatany', iter = 10000)
+Spec2.ipw.ri <- ri(dat2, Z = 'treatany', Y = 'voteshare_spec2_2014',
+               cov = 'voteshare_spec2_2009', prob = 'prob_treatany', iter = 10000)
+Spec3.ipw.ri <- ri(dat3, Z = 'treatany', Y = 'voteshare_spec3_2014',
+               cov = 'voteshare_spec3_2009', prob = 'prob_treatany', iter = 10000)
+Spec1.fe.ri <- ri(dat1, Z = 'treatany', Y = 'voteshare_spec1_2014',
+                  cov = c('voteshare_spec1_2009','num_eligible1','num_eligible2'),
+                  iter = 10000, prob = 'prob_treatany', ipw = F)
+Spec2.fe.ri <- ri(dat2, Z = 'treatany', Y = 'voteshare_spec2_2014',
+                  cov = c('voteshare_spec2_2009','num_eligible1','num_eligible2'),
+                  iter = 10000, prob = 'prob_treatany')
+Spec3.fe.ri <- ri(dat3, Z = 'treatany', Y = 'voteshare_spec3_2014',
+                   cov = c('voteshare_spec3_2009','num_eligible1','num_eligible2'),
+                  iter = 10000, prob = 'prob_treatany', ipw = F)
+
+Spectable <- cbind(rbind(Spec1, 'p.ri' = c(Spec1.ipw.ri$p, Spec1.fe.ri$p)), 
+                   rbind(Spec2, 'p.ri' = c(Spec2.ipw.ri$p, Spec2.fe.ri$p)),
+                   rbind(Spec3, 'p.ri' = c(Spec3.ipw.ri$p, Spec3.fe.ri$p)))
 
 
 
-# Heterogeneous Effects ---------------------------------------------------
-# Heterogeneous treatment effects by rural
-dat1$rur90.dum[dat1$rural_pc>90] <- 1
-dat1$rur90.dum[dat1$rural_pc<=90] <- 0
-dat1$rur80.dum[dat1$rural_pc>80] <- 1
-dat1$rur80.dum[dat1$rural_pc<=80] <- 0
-
-hist(dat1$rural_pc, breaks=20)
-dat1$rur.cat<-NULL
-dat1$rur.cat[dat1$rural_pc<=60] <- "rur60less"
-dat1$rur.cat[dat1$rural_pc<=80 & dat1$rural_pc>60] <- "rur60.80"
-dat1$rur.cat[dat1$rural_pc<=90 & dat1$rural_pc>80] <- "rur80.90"
-dat1$rur.cat[dat1$rural_pc<=100& dat1$rural_pc>90] <- "rur90.100"
-dat1$rur.cat <- as.factor(dat1$rur.cat)
-dat1 <- within(dat1, rur.cat <- relevel(rur.cat, ref = "rur60less"))
-table(dat1$rur.cat)
-
-FE <- lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1)
-FE.rur <- lm(voteshare_spec1_2014 ~ treatany*rur90.dum + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1)
-FE.rur.cat <- lm(voteshare_spec1_2014 ~ treatany*rur.cat + voteshare_spec1_2009 + num_eligible1 + num_eligible2 , data=dat1)
-summary(FE.rur)
-summary(FE.rur.cat)
-hist(dat1$rural_pc)
-
-# Heterogeneous treatment effects by SC/ST
-hist(dat1$scst_pc, breaks=20)
-dat1$sc.dum40 <-0
-dat1$sc.dum40[dat1$scst_pc>40] <- 1
-dat1$sc.cat<-NULL
-dat1$sc.cat[dat1$scst_pc<=20] <- "sc20less"
-dat1$sc.cat[dat1$scst_pc<=40 & dat1$scst_pc>20] <- "sc20.40"
-dat1$sc.cat[dat1$scst_pc<=60 & dat1$scst_pc>40] <- "sc40.60"
-dat1$sc.cat[dat1$scst_pc<=100& dat1$scst_pc>60] <- "sc60.100"
-dat1$sc.cat <- as.factor(dat1$sc.cat)
-dat1 <- within(dat1, sc.cat <- relevel(sc.cat, ref = "sc60.100"))
-table(dat1$sc.cat)
-
-FE <- lm(voteshare_spec1_2014 ~ treatany + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1)
-FE.sc.cat <- lm(voteshare_spec1_2014 ~ treatany*sc.cat + rural_pc + voteshare_spec1_2009 + num_eligible1 + num_eligible2 , data=dat1)
-summary(FE)
-summary(FE.sc.cat)
