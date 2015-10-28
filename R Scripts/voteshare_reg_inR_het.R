@@ -76,6 +76,17 @@ cat(stargazer(FE.state, single.row = T, covariate.labels = covlabels, dep.var.la
 # het.state <- FE.het.multi.fxn(dat1, "voteshare_spec1_2009", "voteshare_spec1_2014" ,interaction = state.dummies[c(1,3:9)], dep_matrix1, round=3)
 # Excludes dummy for Bihar, because Bihar had no treated ACs
 
+# Heterogeneous treatment effects by Poll Date
+treat.poll <- t(table(dat1$treatany, dat1$poll_date))
+colnames(treat.poll) <- c("C", "T")
+cat(print(xtable(treat.poll),floating = F), file="Figures/treatpoll.tex", sep="\n")
+dat1poll <- subset(dat1, poll_date!="2014-05-12")
+FE.poll <- lm(voteshare_spec1_2014 ~ treatany*poll_date + voteshare_spec1_2009 + num_eligible1 + num_eligible2, data=dat1poll)
+covlabels <- c("Treat", "Poll 2014-04-17", "Poll 2014-04-24", "Poll 2014-04-30", "Poll 2014-05-07", "Vote Share VB 2009", "Num Radio 1", "Num Radio 2", "Treat:Poll 2014-04-17", "Treat:Poll 2014-04-24", "Treat:Poll 2014-04-30", "Treat:Poll 2014-05-07",  "Constant")
+cat(stargazer(FE.poll, single.row = T,  dep.var.labels = "Vote Share VB 2014", notes = "Omitted Date 2014-04-10, Excludes 2014-05-12", notes.append = T,
+              covariate.labels = covlabels), file="Figures/pollhet.tex", sep="\n")
+
+
 
 # Competition -------------------------------------------------------------
 elec <- read.csv("Data/marginvictory_data.csv")
@@ -83,7 +94,7 @@ names(elec)
 elec <- left_join(dat1, 
                   select(elec, state_name, ac_num, ac_name,
                          margin_2009, margin_2014, winner_party2009, 
-                         winner_party2014,runnerup_party2009, runnerup_party2014 ),
+                         winner_party2014,runnerup_party2009, runnerup_party2014, winner_votes2014, runnerup_votes2014, winner_votes2009, runnerup_votes2009, total_ac_votes2009, total_ac_votes2014 ),
                   by = c('state_name', 'ac_num', 'ac_name'))
 
 hist(elec$margin_2009)
@@ -118,8 +129,11 @@ table(comp10$winner_party2014, comp10$state_name)
 table(as.character(comp10$winner_party2009)==as.character(comp10$winner_party2014))
 # 179 ACs of 289 competitive ACs in 2009 switched parties
 
-hist(comp10$voteshare_spec1_2009, main="Histogram of Vote Share of VB parties 2009")
-hist(comp10$voteshare_spec1_2014, main="Histogram of Vote Share of VB parties 2014")
+pdf(file = "~/Desktop/Replication Collaboration Clone/Figures/VBcomp.pdf",width=10,height=5)
+par(mfrow=c(1,2))
+hist(comp10$voteshare_spec1_2009, main="Histogram of VB Share in \nCompetitive ACs (<10pp in 2009) 2009", xlab="Vote Share of VB parties 2009")
+hist(comp10$voteshare_spec1_2014, main="Histogram of VB Share in \nCompetitive ACs (<10pp in 2009) 2014", xlab="Vote Share of VB parties 2014")
+dev.off()
 # Of the competitive ACs in 2009, many had really high share of vote-buying in 2009, 
 # and even higher share of vote-buying in 2014
 
@@ -127,5 +141,6 @@ comp10[1:20,c("state_name", "ac_name", "winner_party2014", "runnerup_party2014",
 # Now need to check if the winner or runnerup parties in 2014 were considered vote-buying
 
 
-
+par(mfrow=c(1,1))
+hist(comp10$winner_votes2014/comp10$total_ac_votes2014, main="Hist of Winner Vote Share 2014 in \nCompetitive ACs (<10pp in 2009)", xlab="Winner Vote Share 2014")
 

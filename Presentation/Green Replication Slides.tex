@@ -378,32 +378,10 @@ ATE & -5.86 & -6.04 & -7.68 & -7.73 & -3.68 & -3.41 \\
 
 \begin{frame}
 \frametitle{Robustness to the definition of vote buying party}
-
 \begin{figure}
 \centering
 \includegraphics[width=.6\textwidth]{../Figures/p_journo_defn}
 \end{figure}
-
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Interpretation of the results}
-
-are people just fleeing from the major parties and voting for minor parties?\\
-does this change the results? \\
-can het effects tell us more about how this works?
-
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Interpretation: Implications for who wins}
-
-In how many PCs do these results change the results?
-calc het effects by state and then do projections of which party would have won if the intervention hadn't happened
-
 \end{frame}
 
 
@@ -438,7 +416,7 @@ Continuous Rural\\
 \vbox{%
 \vspace{-10pt}
 \begin{table}
-Dummy: More than 50\% SC/ST \\
+Dummy: $>$50\% SC/ST \\
 \input{../Figures/hetsc50.tex} 
 \bigskip
 Continuous SC/ST\\
@@ -453,18 +431,49 @@ Continuous SC/ST\\
 \end{columns}
 \end{frame}
 
-
+\begin{frame}
+\frametitle{Heterogeneous effects: Date of election}
+\begin{columns}[T] % align columns
+\begin{column}{.55\textwidth}
+\scalebox{.6}{
+\vbox{%
+\vspace{-40pt}
+\input{../Figures/pollhet.tex} }}
+\end{column}%
+\hfill%
+\begin{column}{.35\textwidth}
+\scalebox{.7}{
+\vbox{%
+\vspace{-5pt}
+\begin{table}
+\caption{Treatment by Date}
+\input{../Figures/treatpoll.tex}
+\end{table}}}
+\end{column}%
+\end{columns}
+\end{frame}
 
 \begin{frame}
 \frametitle{Heterogeneous effects: Competitiveness of election}
-
-
+\begin{columns}[T] % align columns
+\begin{column}{.38\textwidth}
+\scalebox{.6}{
+\vbox{%
+\vspace{-40pt}
+\input{../Figures/comphet.tex} }}
+\end{column}%
+\hfill%
+\begin{column}{.58\textwidth}
+\vspace{-10pt}
+\includegraphics[scale=.5]{../Figures/histcomp.pdf}
+\end{column}%
+\end{columns}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Heterogeneous effects: State}
-\scalebox{.9}{
+\scalebox{1}{
 \vbox{%
 \vspace{-10pt}
 \begin{table}
@@ -476,32 +485,45 @@ Continuous SC/ST\\
 \begin{frame}
 \frametitle{Heterogeneous effects: State}
 \begin{columns}[T] % align columns
-\begin{column}{.48\textwidth}
+\begin{column}{.40\textwidth}
 \scalebox{.6}{
 \vbox{%
-\vspace{-10pt}
-\begin{table}
-\input{../Figures/statehetA.tex}
-\end{table}}}
+\vspace{-40pt}
+\input{../Figures/statehetA.tex}}}
 \end{column}%
 \hfill%
 \begin{column}{.48\textwidth}
 \scalebox{.6}{
 \vbox{%
-\vspace{-10pt}
-\begin{table}
-\input{../Figures/statehetB.tex}
-\end{table}}}
+\vspace{-40pt}
+\input{../Figures/statehetB.tex}}}
 \end{column}%
 \end{columns}
 \end{frame}
 
 \begin{frame}
-\frametitle{Heterogeneous effects: State}
-
-Map het effects by state
-
+\frametitle{Interpretation of the results}
+Common to switch parties and punish incumbents in India.\\
+Among 289 comp. ACs in 2009, 179 switched parties in 2014.\\
+\includegraphics[scale=.45]{../Figures/VBcomp.pdf}
 \end{frame}
+
+\begin{frame}
+\frametitle{Interpretation of the results}
+
+Are people fleeing major parties and voting for minor parties?\\
+Does this change the results of elections? \\
+\medskip
+Next step: 
+\begin{itemize}
+\item Among ACs competitive in 2009, would the treatment \\have changed election outcome?\\
+\item Check if winner, runner-up parties in 2014 were vote-buyers
+\item Is the winner non-VB party while runner-up is VB party?
+\item Check margin of victory in 2014 - smaller than ATE?
+\end{itemize}
+\end{frame}
+
+
 %
 %
 %\begin{frame}

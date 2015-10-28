@@ -512,28 +512,31 @@ write.csv(elec, 'Data/turnout_data.csv')
 ##########
 results.10states2009.clean <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/2. Electoral Data/results_10states2009_clean.dta")
 results.10states2014.clean <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/2. Electoral Data/results_10states2014_clean.dta")
+AC.expt.sample <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/3. Sample Data/AC_expt_sample.dta")
 
 ## calculate margin - 2009
 elec2009 <- results.10states2009.clean
 elec2009 <- subset(elec2009, ac_num>0)
 elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(rank = dense_rank(-cand_votes))
-elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(winner_votes = cand_votes[rank==1])
-elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(runnerup_votes = cand_votes[rank==2])
+elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(winner_votes2009 = cand_votes[rank==1])
+elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(runnerup_votes2009 = cand_votes[rank==2])
 elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(winner_party2009 = cand_party[rank==1])
 elec2009 <- elec2009 %>% group_by(state_name, ac_num) %>% mutate(runnerup_party2009 = cand_party[rank==2])
-elec2009$margin_2009 <- 100*(elec2009$winner_votes-elec2009$runnerup_votes)/elec2009$total_ac_votes
-elec2009 <- unique(select(elec2009, state_name, ac_num, ac_name,margin_2009,winner_party2009,runnerup_party2009))
+elec2009$total_ac_votes2009 <- elec2009$total_ac_votes
+elec2009$margin_2009 <- 100*(elec2009$winner_votes2009 -elec2009$runnerup_votes2009)/elec2009$total_ac_votes
+elec2009 <- unique(select(elec2009, state_name, ac_num, ac_name,margin_2009,winner_party2009,runnerup_party2009, winner_votes2009, runnerup_votes2009, total_ac_votes2009))
 
 ## calculate margin - 2014
 elec2014 <- results.10states2014.clean
 elec2014 <- subset(elec2014, ac_num>0)
 elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(rank = dense_rank(-cand_votes))
-elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(winner_votes = cand_votes[rank==1])
-elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(runnerup_votes = cand_votes[rank==2])
+elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(winner_votes2014 = cand_votes[rank==1])
+elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(runnerup_votes2014 = cand_votes[rank==2])
 elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(winner_party2014 = cand_party[rank==1])
 elec2014 <- elec2014 %>% group_by(state_name, ac_num) %>% mutate(runnerup_party2014 = cand_party[rank==2])
-elec2014$margin_2014 <- 100*(elec2014$winner_votes-elec2014$runnerup_votes)/elec2014$total_ac_votes
-elec2014 <- unique(select(elec2014, state_name, ac_num, ac_name,margin_2014,winner_party2014,runnerup_party2014))
+elec2014$total_ac_votes2014 <- elec2014$total_ac_votes
+elec2014$margin_2014 <- 100*(elec2014$winner_votes2014-elec2014$runnerup_votes2014)/elec2014$total_ac_votes
+elec2014 <- unique(select(elec2014, state_name, ac_num, ac_name,margin_2014,winner_party2014,runnerup_party2014, winner_votes2014, runnerup_votes2014, total_ac_votes2014))
 
 ## merge together
 elec <- left_join(elec2014, elec2009, by = c('state_name', 'ac_num', 'ac_name'))
