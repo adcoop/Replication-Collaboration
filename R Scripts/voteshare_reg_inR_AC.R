@@ -21,8 +21,8 @@ dat1 <- read.csv("Data/voteshare1.csv")
 dat2 <- read.csv("Data/voteshare2.csv")
 dat3 <- read.csv("Data/voteshare3.csv")
 
-  # for now read in old dat2 b/c new one isn't working
-dat2 <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare2.csv")
+  # for now read in old dat2 b/c new one may have an error
+# dat2 <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare2.csv")
 
 source("R Scripts/Functions/omegamatrix.R")
 source("R Scripts/Functions/IPW and FE function.R")
@@ -55,9 +55,19 @@ Spec3.fe.ri <- ri(dat3, Z = 'treatany', Y = 'voteshare_spec3_2014',
                    cov = c('voteshare_spec3_2009','num_eligible1','num_eligible2'),
                   iter = 10000, prob = 'prob_treatany', ipw = F)
 
+means <- c(mean(dat1$voteshare_spec1_2014[dat1$treatany==0], na.rm=T),
+           mean(dat2$voteshare_spec2_2014[dat2$treatany==0], na.rm=T),
+           mean(dat3$voteshare_spec3_2014[dat3$treatany==0], na.rm=T))
+N <- c(dim(dat1)[1], dim(dat2)[1], dim(dat3)[1])
+control <- c(dim(dat1[dat1$treatany==0,])[1], dim(dat2[dat2$treatany==0,])[1], dim(dat3[dat3$treatany==0,])[1])
+treat <- c(dim(dat1[dat1$treatany==1,])[1], dim(dat2[dat2$treatany==1,])[1], dim(dat3[dat3$treatany==1,])[1])
+
 Spectable <- cbind(rbind(Spec1, 'p.ri' = c(Spec1.ipw.ri$p, Spec1.fe.ri$p)), 
                    rbind(Spec2, 'p.ri' = c(Spec2.ipw.ri$p, Spec2.fe.ri$p)),
                    rbind(Spec3, 'p.ri' = c(Spec3.ipw.ri$p, Spec3.fe.ri$p)))
+Spectable <- rbind(Spectable,
+                   means,
+                   N, control, treat)
 
 xtable(Spectable)
 

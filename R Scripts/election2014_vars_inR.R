@@ -123,6 +123,10 @@ journalist.sample <- unique(journalist.sample)
 
 ## write to csv
 write.csv(journalist.sample, "Data/votebuyers_spec1.csv")
+setnames(journalist.sample, 'party_ally', 'party_name')
+write.dta(journalist.sample, "Data/votebuyers_spec1.dta")
+setnames(journalist.sample, 'party_name', 'party_ally')
+
 
 
 #####
@@ -132,9 +136,9 @@ write.csv(journalist.sample, "Data/votebuyers_spec1.csv")
 ## subset the journalist data to create a list of votebuyers by state
 journalist.sample <- filter(journalist, in_sample==1)
 
-## create measure of pct of journos who name major parties by state
+## create measure of pct of journos who name major parties by state + poll date
 journalist.sample <- journalist.sample %>% 
-  group_by(state_name) %>% 
+  group_by(state_name, poll_date) %>% 
   mutate(pct_nda = mean(nda_vb, na.rm=T), pct_upa = mean(upa_vb, na.rm=T), pct_oth = mean(oth_vb, na.rm=T))
 
 ## reshape to create list of votebuyers by PC
@@ -143,11 +147,17 @@ journalist.sample <- journalist.sample %>%
   gather(secret, party_ally, -state_name, -poll_date, -pct_nda, -pct_upa, -pct_oth)
 journalist.sample <- filter(journalist.sample, party_ally!="") %>% 
   select(-secret) %>% 
-  arrange(state_name, party_ally)
+  arrange(state_name, poll_date, party_ally)
 journalist.sample <- unique(journalist.sample)
 
 ## write to csv
 write.csv(journalist.sample, "Data/votebuyers_spec2.csv")
+setnames(journalist.sample, 'party_ally', 'party_name')
+write.dta(journalist.sample, "Data/votebuyers_spec2.dta")
+setnames(journalist.sample, 'party_name', 'party_ally')
+
+# ## Compare to GV STATA output
+# votebuyers.spec2.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/votebuyers_spec2.dta")
 
 
 #####
@@ -173,6 +183,13 @@ journalist.sample <- unique(journalist.sample)
 
 ## write to csv
 write.csv(journalist.sample, "Data/votebuyers_spec3.csv")
+setnames(journalist.sample, 'party_ally', 'party_name')
+write.dta(journalist.sample, "Data/votebuyers_spec3.dta")
+setnames(journalist.sample, 'party_name', 'party_ally')
+
+# ## Compare to GV STATA output
+# votebuyers.spec3.GV <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/1. Journalist Data/Output Data/votebuyers_spec3.dta")
+# View(cbind.data.frame(votebuyers.spec3.GV, select(journalist.sample, state_name, party_ally, pct_nda, pct_upa, pct_oth)))
 
 
 ##########
@@ -189,7 +206,7 @@ votebuyers.spec3 <- read.csv('Data/votebuyers_spec3.csv')
 ## prep election results
 elec2014 <- results.10states2014.clean
 elec2014 <- subset(elec2014, ac_num>0)
-elec2014 <- left_join(elec2014,ECI.sched.clean, by=c("state_name", 'pc_name', "pc_num") )
+elec2014 <- left_join(elec2014, ECI.sched.clean, by=c("state_name", 'pc_name', "pc_num") )
 
 ## Standardizing party/alliance names
 elec2014$party_name <- elec2014$cand_party
@@ -218,16 +235,37 @@ elec2014$poll_date <- as.character(elec2014$poll_date)
 setnames(votebuyers.spec1, 'party_ally', 'party_name')
 setnames(votebuyers.spec2, 'party_ally', 'party_name')
 setnames(votebuyers.spec3, 'party_ally', 'party_name')
+setnames(votebuyers.spec1, c('pct_nda', 'pct_upa', 'pct_oth'), c('pct_nda.spec1', 'pct_upa.spec1', 'pct_oth.spec1'))
+setnames(votebuyers.spec2, c('pct_nda', 'pct_upa', 'pct_oth'), c('pct_nda.spec2', 'pct_upa.spec2', 'pct_oth.spec2'))
+setnames(votebuyers.spec3, c('pct_nda', 'pct_upa', 'pct_oth'), c('pct_nda.spec3', 'pct_upa.spec3', 'pct_oth.spec3'))
 votebuyers.spec1 <- select(votebuyers.spec1, -poll_date, -pc_name, -X)
-votebuyers.spec2 <- select(votebuyers.spec2, state_name, poll_date:votebuyer_2_0.9)
-votebuyers.spec3 <- select(votebuyers.spec3, state_name, party_name:votebuyer_3_0.9)
+votebuyers.spec2 <- select(votebuyers.spec2, -X)
+votebuyers.spec3 <- select(votebuyers.spec3, -X)
+
+elec2014$poll_date <- as.character(elec2014$poll_date)
+votebuyers.spec2$poll_date <- as.character(votebuyers.spec2$poll_date)
+
 elec2014 <- left_join(elec2014, votebuyers.spec1, by=c("state_name", "pc_num", "party_name"))
 elec2014 <- left_join(elec2014, votebuyers.spec2, by=c("state_name", "poll_date", "party_name"))
 elec2014 <- left_join(elec2014, votebuyers.spec3, by=c("state_name", "party_name"))
 
+## make pct votebuyers by party fill all gropu values
+elec2014 <- elec2014 %>% group_by(state_name, pc_name) %>% 
+  mutate(pct_nda.spec1 = mean(pct_nda.spec1, na.rm=T),
+            pct_upa.spec1 = mean(pct_upa.spec1, na.rm=T),
+            pct_oth.spec1 = mean(pct_oth.spec1, na.rm=T))
+elec2014 <- elec2014 %>% group_by(state_name, poll_date) %>% 
+  mutate(pct_nda.spec2 = mean(pct_nda.spec2, na.rm=T),
+            pct_upa.spec2 = mean(pct_upa.spec2, na.rm=T),
+            pct_oth.spec2 = mean(pct_oth.spec2, na.rm=T))
+elec2014 <- elec2014 %>% group_by(state_name) %>% 
+  mutate(pct_nda.spec3 = mean(pct_nda.spec3, na.rm=T),
+            pct_upa.spec3 = mean(pct_upa.spec3, na.rm=T),
+            pct_oth.spec3 = mean(pct_oth.spec3, na.rm=T))
+
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 1
 votebuyer1 <- elec2014 %>% 
-  group_by(state_name, pc_name, ac_name, ac_num) %>%
+  group_by(state_name, pc_name, ac_name, ac_num, pct_nda.spec1, pct_upa.spec1, pct_oth.spec1) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_1_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_1_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_1_0.2==1], na.rm=T),
@@ -253,7 +291,7 @@ votebuyer1$voteshare_spec1_2014_0.9 <- 100*votebuyer1$votes_0.9/votebuyer1$total
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 2
 votebuyer2 <- elec2014 %>% 
-  group_by(state_name, pc_name, ac_name, ac_num) %>%
+  group_by(state_name, pc_name, ac_name, ac_num, pct_nda.spec2, pct_upa.spec2, pct_oth.spec2) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_2_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_2_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_2_0.2==1], na.rm=T),
@@ -279,7 +317,7 @@ votebuyer2$voteshare_spec2_2014_0.9 <- 100*votebuyer2$votes_0.9/votebuyer2$total
 
 ## Number of vote-buying parties and vote-buyer vote-shares - Spec 3
 votebuyer3 <- elec2014 %>% 
-  group_by(state_name, pc_name, ac_name, ac_num) %>%
+  group_by(state_name, pc_name, ac_name, ac_num, pct_nda.spec3, pct_upa.spec3, pct_oth.spec3) %>%
   summarize(votes_0 = sum(cand_votes[votebuyer_3_0==1], na.rm=T),
             votes_0.1 = sum(cand_votes[votebuyer_3_0.1==1], na.rm=T),
             votes_0.2 = sum(cand_votes[votebuyer_3_0.2==1], na.rm=T),
@@ -303,10 +341,11 @@ votebuyer3$voteshare_spec3_2014_0.7 <- 100*votebuyer3$votes_0.7/votebuyer3$total
 votebuyer3$voteshare_spec3_2014_0.8 <- 100*votebuyer3$votes_0.8/votebuyer3$total_ac_votes
 votebuyer3$voteshare_spec3_2014_0.9 <- 100*votebuyer3$votes_0.9/votebuyer3$total_ac_votes
 
+
 ## merge 2014 data together
-votebuyer1 <- select(votebuyer1, state_name:ac_num, num_spec1_2014:voteshare_spec1_2014_0.9)
-votebuyer2 <- select(votebuyer2, state_name:ac_num, num_spec2_2014:voteshare_spec2_2014_0.9, -total_ac_votes)
-votebuyer3 <- select(votebuyer3, state_name:ac_num, num_spec3_2014:voteshare_spec3_2014_0.9, -total_ac_votes)
+votebuyer1 <- select(votebuyer1, state_name:ac_num, total_ac_votes, grep('spec1', colnames(votebuyer1)))
+votebuyer2 <- select(votebuyer2, state_name:ac_num, grep('spec2', colnames(votebuyer2)), -total_ac_votes)
+votebuyer3 <- select(votebuyer3, state_name:ac_num, grep('spec3', colnames(votebuyer3)), -total_ac_votes)
 
 voteshare_data <- left_join(votebuyer1, votebuyer2, by = c('state_name', 'pc_name', 'ac_name', 'ac_num'))
 voteshare_data <- left_join(voteshare_data, votebuyer3, by = c('state_name', 'pc_name', 'ac_name', 'ac_num'))
@@ -420,6 +459,10 @@ voteshare_data <- left_join(voteshare_data, votebuyer3, by = c('state_name', 'ac
 
 write.csv(voteshare_data, "Data/voteshare_data.csv")
 
+## check against original data
+voteshare_data.VD <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Stata Data/voteshare_data.dta")
+
+
 ## merge in experimental sample
 AC.expt.sample <- read.dta13("~/Dropbox/Green and Vasudevan (2015) replication/3. Sample Data/AC_expt_sample.dta")
 voteshare_data <- inner_join(voteshare_data, 
@@ -441,17 +484,17 @@ voteshare_data$state_election[voteshare_data$state_name=="Andhra Pradesh" | vote
 
 ## write to csv for each specification
 voteshare_data1 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
-                          grep("_spec1_", colnames(voteshare_data)),
+                          grep("spec1", colnames(voteshare_data)),
                           station_name1:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
   ## subset to only ACs where we have voting data 
 voteshare_data1 <- filter(voteshare_data1, num_spec1_2014>0)
 write.csv(voteshare_data1, 'Data/voteshare1.csv')
 voteshare_data2 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
-                          grep("_spec2_", colnames(voteshare_data)),
+                          grep("spec2", colnames(voteshare_data)),
                           station_name1:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
 write.csv(voteshare_data2, 'Data/voteshare2.csv')
 voteshare_data3 <- select(voteshare_data, state_name:ac_num, total_ac_votes, 
-                          grep("_spec3_", colnames(voteshare_data)),
+                          grep("spec3", colnames(voteshare_data)),
                           station_name1:wgt_treatany, num_eligible1, num_eligible2, num_eligible3)
 write.csv(voteshare_data3, 'Data/voteshare3.csv')
 

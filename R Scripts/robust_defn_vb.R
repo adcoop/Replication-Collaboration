@@ -17,7 +17,7 @@ setwd('~/Desktop/Replication Collaboration Clone')
 ## read in RI function
 source("R Scripts/Functions/ri_fxn.R")
 
-## read in my new data nad tehir original data and merge
+## read in my new data and their original data and merge
 dat1 <- read.csv("Data/voteshare1.csv")
 dat1o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare1.csv")
 dat1o <- data.frame('voteshare_spec1_2014o' = dat1o$voteshare_spec1_2014, 
@@ -27,13 +27,20 @@ dat1 <- left_join(dat1, dat1o, by = c('state_name', 'ac_num'))
 
 dat2 <- read.csv("Data/voteshare2.csv")
 dat2o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare2.csv")
-dat2o <- data.frame('voteshare_spec2_2014o' = dat1o$voteshare_spec2_2014, 
-                    'voteshare_spec2_2009o' = dat1o$voteshare_spec2_2009, 
-                    'state_name' = dat1o$state_name, 'ac_num' = dat1o$ac_num)
+dat2o <- data.frame('voteshare_spec2_2014o' = dat2o$voteshare_spec2_2014, 
+                    'voteshare_spec2_2009o' = dat2o$voteshare_spec2_2009, 
+                    'state_name' = dat2o$state_name, 'ac_num' = dat2o$ac_num)
 dat2 <- left_join(dat2, dat2o, by = c('state_name', 'ac_num'))
 
+dat3 <- read.csv("Data/voteshare3.csv")
+dat3o <- read.csv("~/Dropbox/Green and Vasudevan (2015) replication/4. Analysis/Matlab Data/voteshare3.csv")
+dat3o <- data.frame('voteshare_spec3_2014o' = dat3o$voteshare_spec3_2014, 
+                    'voteshare_spec3_2009o' = dat3o$voteshare_spec3_2009, 
+                    'state_name' = dat3o$state_name, 'ac_num' = dat3o$ac_num)
+dat3 <- left_join(dat3, dat3o, by = c('state_name', 'ac_num'))
 
-## visualize the differences between defns
+
+## visualize the differences between the defns that are supposed to be the same
 pdf("Figures/new_vb_defn_0.pdf")
 par(mar=c(5,5,3,2))
 plot(dat1$voteshare_spec1_2014o, dat1$voteshare_spec1_2014,
@@ -41,6 +48,37 @@ plot(dat1$voteshare_spec1_2014o, dat1$voteshare_spec1_2014,
      main = 'Identified by Any Journalists', cex.main = 2, cex.lab = 2, cex.axis = 2)
 dev.off()
 
+plot(dat1$voteshare_spec1_2009o, dat1$voteshare_spec1_2009,
+     xlab = 'Original Vote Buyer Vote Share', ylab = "New Vote Buyer Vote Share",
+     main = 'Identified by Any Journalists', cex.main = 2, cex.lab = 2, cex.axis = 2)
+
+  ## there is something wrong with dat2 - state and poll date
+plot(dat2$voteshare_spec2_2014o, dat2$voteshare_spec2_2014,
+     xlab = 'Original Vote Buyer Vote Share', ylab = "New Vote Buyer Vote Share",
+     main = 'Identified by Any Journalists', cex.main = 2, cex.lab = 2, cex.axis = 2)
+
+plot(dat2$voteshare_spec2_2009o, dat2$voteshare_spec2_2009,
+     xlab = 'Original Vote Buyer Vote Share', ylab = "New Vote Buyer Vote Share",
+     main = 'Identified by Any Journalists', cex.main = 2, cex.lab = 2, cex.axis = 2)
+
+plot(dat3$voteshare_spec3_2014o, dat3$voteshare_spec3_2014,
+     xlab = 'Original Vote Buyer Vote Share', ylab = "New Vote Buyer Vote Share",
+     main = 'Identified by Any Journalists', cex.main = 2, cex.lab = 2, cex.axis = 2)
+
+plot(dat3$voteshare_spec3_2009o, dat3$voteshare_spec3_2009,
+     xlab = 'Original Vote Buyer Vote Share', ylab = "New Vote Buyer Vote Share",
+     main = 'Identified by Any Journalists', cex.main = 2, cex.lab = 2, cex.axis = 2)
+
+
+## check the subset of dat2 that didn't merge correctly
+t <- select(dat2, state_name, pc_name, poll_date, ac_name, pct_nda.spec2, pct_upa.spec2, pct_oth.spec2, voteshare_spec2_2014, voteshare_spec2_2014o)
+t$voteshare_spec2_2014 <- round(t$voteshare_spec2_2014, 3)
+t$voteshare_spec2_2014o <- round(t$voteshare_spec2_2014o, 3)
+t <- filter(t, voteshare_spec2_2014!=voteshare_spec2_2014o)
+View(t)
+
+
+## output figures plotting the old and new defns against each other
 for (i in 1:9){
   pdf(paste0("Figures/new_vb_defn_", i, ".pdf"))
   par(mar=c(5,5,3,2))
